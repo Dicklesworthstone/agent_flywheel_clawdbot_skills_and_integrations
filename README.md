@@ -41,6 +41,12 @@ Tools from the [Agentic Coding Flywheel Setup](https://github.com/Dicklesworthst
 |-------|-------------|----------|
 | **[claude-chrome](skills/claude-chrome/SKILL.md)** | Claude in Chrome - control your authenticated browser, automate workflows, fill forms, extract data | "Open Gmail and draft replies to unread emails" |
 
+### Media & Image Tools
+
+| Skill | Description | Use Case |
+|-------|-------------|----------|
+| **[giil](skills/giil/SKILL.md)** | Get Image [from] Internet Link - download full-resolution images from iCloud, Dropbox, Google Photos, Google Drive share links | "Download this screenshot: https://share.icloud.com/..." |
+
 ### Development Tools
 
 | Skill | Description | Use Case |
