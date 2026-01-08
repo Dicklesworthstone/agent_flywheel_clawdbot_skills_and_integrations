@@ -220,7 +220,29 @@ cass diag --verbose
 
 ### Remote Sources (Multi-Machine Search)
 
-Search across sessions from multiple machines via SSH/rsync:
+Search across sessions from multiple machines via SSH/rsync.
+
+#### Setup Wizard (Recommended)
+
+```bash
+cass sources setup
+```
+
+The wizard:
+1. Discovers SSH hosts from `~/.ssh/config`
+2. Probes each for agent data and cass installation
+3. Optionally installs cass on remotes
+4. Indexes sessions on remotes
+5. Configures `sources.toml`
+6. Syncs data locally
+
+```bash
+cass sources setup --hosts css,csd,yto  # Specific hosts only
+cass sources setup --dry-run             # Preview without changes
+cass sources setup --resume              # Resume interrupted setup
+```
+
+#### Manual Setup
 
 ```bash
 # Add a remote machine
@@ -413,6 +435,50 @@ Errors are JSON with actionable hints:
 
 ---
 
+## Search Modes
+
+Three search modes, selectable with `--mode` flag:
+
+| Mode | Algorithm | Best For |
+|------|-----------|----------|
+| **lexical** (default) | BM25 full-text | Exact term matching, code searches |
+| **semantic** | Vector similarity | Conceptual queries, "find similar" |
+| **hybrid** | Reciprocal Rank Fusion | Balanced precision and recall |
+
+```bash
+cass search "authentication" --mode lexical --robot
+cass search "how to handle user login" --mode semantic --robot
+cass search "auth error handling" --mode hybrid --robot
+```
+
+**Hybrid** combines lexical and semantic using RRF:
+```
+RRF_score = Σ 1 / (60 + rank_i)
+```
+
+---
+
+## Pipeline Mode (Chained Search)
+
+Chain searches by piping session paths:
+
+```bash
+# Find sessions mentioning "auth", then search within those for "token"
+cass search "authentication" --robot-format sessions | \
+  cass search "refresh token" --sessions-from - --robot
+
+# Build a filtered corpus from today's work
+cass search --today --robot-format sessions > today_sessions.txt
+cass search "bug fix" --sessions-from today_sessions.txt --robot
+```
+
+Use cases:
+- **Drill-down**: Broad search → narrow within results
+- **Cross-reference**: Find sessions with term A, then find term B within them
+- **Corpus building**: Save session lists for repeated searches
+
+---
+
 ## Query Language
 
 ### Basic Queries
@@ -422,6 +488,26 @@ Errors are JSON with actionable hints:
 | `error` | Messages containing "error" (case-insensitive) |
 | `python error` | Both "python" AND "error" |
 | `"authentication failed"` | Exact phrase |
+
+### Boolean Operators
+
+| Operator | Example | Meaning |
+|----------|---------|---------|
+| `AND` | `python AND error` | Both terms required (default) |
+| `OR` | `error OR warning` | Either term matches |
+| `NOT` | `error NOT test` | First term, excluding second |
+| `-` | `error -test` | Shorthand for NOT |
+
+```bash
+# Complex boolean query
+cass search "authentication AND (error OR failure) NOT test" --robot
+
+# Exclude test files
+cass search "bug fix -test -spec" --robot
+
+# Either error type
+cass search "TypeError OR ValueError" --robot
+```
 
 ### Wildcard Patterns
 
