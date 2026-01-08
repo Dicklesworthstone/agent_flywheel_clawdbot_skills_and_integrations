@@ -31,7 +31,7 @@ Skills are markdown files that teach Clawdbot (a multi-surface AI assistant by P
 - Command syntax and examples
 - Best practices and common workflows
 
-When you enable a skill, Clawdbot can intelligently use that tool to accomplish tasks across WhatsApp, Telegram, iMessage, web, and voice interfaces.
+When you enable a skill, Clawdbot can use that tool to accomplish tasks across WhatsApp, Telegram, iMessage, web, and voice interfaces.
 
 ## Skills Included
 
@@ -111,7 +111,7 @@ Skills that encode proven workflows and prompts for multi-agent development:
 
 ### One-Line Install (Recommended)
 
-Install all skills instantly:
+Install all skills:
 
 ```bash
 curl -fsSL "https://raw.githubusercontent.com/Dicklesworthstone/agent_flywheel_clawdbot_skills_and_integrations/main/install.sh?v=$(date +%s)" | bash -s -- --all
@@ -262,7 +262,7 @@ brew install gh
 
 ## Usage Examples
 
-Once skills are installed and enabled, you can interact naturally:
+Once skills are installed and enabled:
 
 ### Via WhatsApp/Telegram/iMessage:
 ```
