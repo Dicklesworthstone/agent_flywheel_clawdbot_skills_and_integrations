@@ -1,224 +1,344 @@
 ---
 name: cm
-description: "CASS Memory System - procedural memory for AI coding agents. Transforms scattered sessions into persistent, cross-agent learnings."
+description: "CASS Memory System - procedural memory for AI coding agents. Three-layer cognitive architecture with confidence decay, anti-pattern learning, and cross-agent knowledge transfer."
 ---
 
 # CM - CASS Memory System
 
-Procedural memory for AI coding agents. Transforms scattered agent sessions into persistent, cross-agent memory so every agent learns from every other agent's experience.
+Procedural memory for AI coding agents. Transforms scattered sessions into persistent, cross-agent memory. Uses a three-layer cognitive architecture that mirrors human expertise development.
 
-## Quick Start (for Agents)
+## Why This Exists
+
+AI coding agents accumulate valuable knowledge but it's:
+- **Trapped in sessions** - Context lost when session ends
+- **Agent-specific** - Claude doesn't know what Cursor learned
+- **Unstructured** - Raw logs aren't actionable guidance
+- **Subject to collapse** - Naive summarization loses critical details
+
+You've solved auth bugs three times this month across different agents. Each time you started from scratch.
+
+CM solves this with cross-agent learning: a pattern discovered in Cursor is immediately available to Claude Code.
+
+## Three-Layer Cognitive Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    EPISODIC MEMORY (cass)                           │
+│   Raw session logs from all agents — the "ground truth"             │
+└───────────────────────────┬─────────────────────────────────────────┘
+                            │ cass search
+                            ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    WORKING MEMORY (Diary)                           │
+│   Structured session summaries: accomplishments, decisions, etc.    │
+└───────────────────────────┬─────────────────────────────────────────┘
+                            │ reflect + curate
+                            ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    PROCEDURAL MEMORY (Playbook)                     │
+│   Distilled rules with confidence tracking and decay                │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## The One Command You Need
 
 ```bash
-# Get relevant context for a task
-cm context "implementing user authentication" --json
+cm context "<your task>" --json
+```
 
-# Get system documentation
+**Run this before starting any non-trivial task.** Returns:
+- **relevantBullets** - Rules from playbook scored by task relevance
+- **antiPatterns** - Things that have caused problems
+- **historySnippets** - Past sessions (yours and other agents')
+- **suggestedCassQueries** - Deeper investigation searches
+
+## Confidence Decay System
+
+Rules aren't immortal. Confidence decays without revalidation:
+
+| Mechanism | Effect |
+|-----------|--------|
+| **90-day half-life** | Confidence halves every 90 days without feedback |
+| **4x harmful multiplier** | One mistake counts 4× as much as one success |
+| **Maturity progression** | `candidate` → `established` → `proven` |
+
+A rule helpful 8 times in January but never validated since loses confidence over time.
+
+## Anti-Pattern Learning
+
+Bad rules don't just get deleted. They become warnings:
+
+```
+"Cache auth tokens for performance"
+    ↓ (3 harmful marks)
+"PITFALL: Don't cache auth tokens without expiry validation"
+```
+
+When a rule is marked harmful multiple times, it's automatically inverted into an anti-pattern.
+
+## ACE Pipeline (How Rules Are Created)
+
+```
+Generator → Reflector → Validator → Curator
+```
+
+| Stage | Role | LLM? |
+|-------|------|------|
+| **Generator** | Pre-task context hydration (`cm context`) | No |
+| **Reflector** | Extract patterns from sessions (`cm reflect`) | Yes |
+| **Validator** | Evidence gate against cass history | Yes |
+| **Curator** | Deterministic delta merge | **No** |
+
+**Critical:** Curator has NO LLM to prevent context collapse from iterative drift.
+
+## Commands Reference
+
+### Context Retrieval (Primary Workflow)
+
+```bash
+# THE MAIN COMMAND - run before non-trivial tasks
+cm context "implement user authentication" --json
+
+# Limit results for token budget
+cm context "fix bug" --json --limit 5 --no-history
+
+# Self-documenting explanation
 cm quickstart --json
+
+# System health
+cm doctor --json
 ```
 
-## Core Commands
-
-### Context Retrieval
+### Playbook Management
 
 ```bash
-# Get rules and history relevant to a task
-cm context "fix the database connection timeout"
+cm playbook list                              # All rules
+cm playbook get b-8f3a2c                      # Rule details
+cm playbook add "Always run tests first"      # Add rule
+cm playbook add --file rules.json             # Batch add
+cm playbook remove b-xyz --reason "Outdated"  # Remove
+cm playbook export > backup.yaml              # Export
+cm playbook import shared.yaml                # Import
 
-# JSON output for agents
-cm context "implement OAuth flow" --json
-
-# Include more historical context
-cm context "refactor API" --depth deep
+cm top 10                                     # Top effective rules
+cm stale --days 60                            # Rules without recent feedback
+cm why b-8f3a2c                               # Rule provenance
+cm stats --json                               # Playbook health metrics
 ```
 
-### Rule Management
+### Learning & Feedback
 
 ```bash
-# Show top effective rules
-cm top 10
+# Manual feedback
+cm mark b-8f3a2c --helpful
+cm mark b-xyz789 --harmful --reason "Caused regression"
+cm undo b-xyz789                              # Revert feedback
 
-# Find rules similar to a query
-cm similar "error handling patterns"
+# Session outcomes (positional: status, rules)
+cm outcome success b-8f3a2c,b-def456
+cm outcome failure b-x7k9p1 --summary "Auth approach failed"
+cm outcome-apply                              # Apply to playbook
 
-# Get full playbook
-cm playbook list
+# Reflection (usually automated)
+cm reflect --days 7 --json
 
-# Show why a rule exists
-cm why BULLET_ID
-```
-
-### Feedback
-
-```bash
-# Mark a rule as helpful
-cm mark BULLET_ID --helpful
-
-# Mark a rule as harmful
-cm mark BULLET_ID --harmful
-
-# Undo feedback
-cm undo BULLET_ID
-```
-
-### Reflection
-
-```bash
-# Process recent sessions to extract new rules
-cm reflect
-
-# Reflect on specific time range
-cm reflect --since "7d"
+# Validation
+cm validate "Always check null before dereferencing"
 
 # Audit sessions against rules
-cm audit
+cm audit --days 30
+
+# Deprecate permanently
+cm forget b-xyz789 --reason "Superseded by better pattern"
 ```
 
-### Validation
+### Onboarding (Agent-Native)
+
+Zero-cost playbook building using your existing agent:
 
 ```bash
-# Validate a proposed rule against history
-cm validate "Always use prepared statements for SQL queries"
+cm onboard status                             # Check progress
+cm onboard gaps                               # Category gaps
+cm onboard sample --fill-gaps                 # Prioritized sessions
+cm onboard read /path/session.jsonl --template  # Rich context
+cm onboard mark-done /path/session.jsonl      # Mark processed
+cm onboard reset                              # Start fresh
 ```
 
-## Playbook Commands
+### Trauma Guard (Safety System)
 
 ```bash
-# List all playbook rules
-cm playbook list
+cm trauma list                                # Active patterns
+cm trauma add "DROP TABLE" --severity critical
+cm trauma heal t-abc --reason "Intentional migration"
+cm trauma remove t-abc
+cm trauma scan --days 30                      # Scan for traumas
+cm trauma import shared-traumas.yaml
 
-# Show playbook stats
-cm playbook stats
-
-# Export playbook
-cm playbook export --format md > playbook.md
+cm guard --install                            # Claude Code hook
+cm guard --git                                # Git pre-commit hook
+cm guard --status                             # Check installation
 ```
 
-## Health & Diagnostics
+### System Commands
 
 ```bash
-# System health check
-cm doctor
-
-# Fix issues automatically
-cm doctor --fix
-
-# Show usage statistics
-cm usage
-
-# Show playbook health metrics
-cm stats
+cm init                                       # Initialize
+cm init --starter typescript                  # With template
+cm starters                                   # List templates
+cm serve --port 3001                          # MCP server
+cm usage                                      # LLM cost stats
+cm privacy status                             # Privacy settings
+cm privacy disable                            # Disable enrichment
+cm project --format agents.md                 # Export for AGENTS.md
 ```
 
-## Stale Rules
+## Inline Feedback (During Work)
 
-```bash
-# Find rules without recent feedback
-cm stale
+Leave feedback in code comments. Parsed during reflection:
 
-# Find rules older than threshold
-cm stale --days 30
+```typescript
+// [cass: helpful b-8f3a2c] - this rule saved me from a rabbit hole
+
+// [cass: harmful b-x7k9p1] - this advice was wrong for our use case
 ```
 
-## Forgetting Rules
+## Agent Protocol
 
-```bash
-# Deprecate a rule
-cm forget BULLET_ID
-
-# Deprecate with reason
-cm forget BULLET_ID --reason "Outdated pattern"
+```
+1. START:    cm context "<task>" --json
+2. WORK:     Reference rule IDs when following them
+3. FEEDBACK: Leave inline comments when rules help/hurt
+4. END:      Just finish. Learning happens automatically.
 ```
 
-## Outcome Recording
+You do NOT need to:
+- Run `cm reflect` (automation handles this)
+- Run `cm mark` manually (use inline comments)
+- Manually add rules to the playbook
 
-```bash
-# Record implicit feedback from session outcomes
-cm outcome success "RULE1,RULE2,RULE3"
-cm outcome failure "RULE4,RULE5"
+## Gap Analysis Categories
 
-# Apply recorded outcomes to playbook
-cm outcome-apply
+| Category | Keywords |
+|----------|----------|
+| `debugging` | error, fix, bug, trace, stack |
+| `testing` | test, mock, assert, expect, jest |
+| `architecture` | design, pattern, module, abstraction |
+| `workflow` | task, CI/CD, deployment |
+| `documentation` | comment, README, API doc |
+| `integration` | API, HTTP, JSON, endpoint |
+| `collaboration` | review, PR, team |
+| `git` | branch, merge, commit |
+| `security` | auth, token, encrypt, permission |
+| `performance` | optimize, cache, profile |
+
+Category status thresholds:
+- `critical`: 0 rules (high priority)
+- `underrepresented`: 1-2 rules
+- `adequate`: 3-10 rules
+- `well-covered`: 11+ rules
+
+## Graceful Degradation
+
+| Condition | Behavior |
+|-----------|----------|
+| No cass | Playbook-only scoring, no history snippets |
+| No playbook | Empty playbook, commands still work |
+| No LLM | Deterministic reflection, no semantic enhancement |
+| Offline | Cached playbook + local diary |
+
+## Output Format
+
+All commands support `--json` for machine-readable output:
+
+```json
+{
+  "success": true,
+  "task": "fix the auth timeout bug",
+  "relevantBullets": [
+    {
+      "id": "b-8f3a2c",
+      "content": "Always check token expiry before auth debugging",
+      "effectiveScore": 8.5,
+      "maturity": "proven",
+      "relevanceScore": 0.92
+    }
+  ],
+  "antiPatterns": [...],
+  "historySnippets": [...],
+  "suggestedCassQueries": [...]
+}
 ```
 
-## MCP Server
+## Error Handling
 
-Run as an MCP server for agent integration:
-
-```bash
-cm serve
-cm serve --port 9000
+```json
+{
+  "success": false,
+  "code": "PLAYBOOK_NOT_FOUND",
+  "error": "Playbook file not found",
+  "hint": "Run 'cm init' to create a new playbook",
+  "retryable": false
+}
 ```
 
-## Starter Playbooks
+Exit codes:
+- `1` internal error
+- `2` user input/usage
+- `3` configuration
+- `4` filesystem
+- `5` network
+- `6` cass error
+- `7` LLM/provider error
+
+## Token Budget Management
+
+| Flag | Effect |
+|------|--------|
+| `--limit N` | Cap number of rules |
+| `--min-score N` | Only rules above threshold |
+| `--no-history` | Skip historical snippets |
+| `--json` | Structured output |
+
+## Automating Reflection
+
+Set up a cron job:
 
 ```bash
-# List available starters
-cm starters
-
-# Initialize with a starter
-cm init --starter typescript
-cm init --starter python
-cm init --starter go
+# Daily at 2am
+0 2 * * * /usr/local/bin/cm reflect --days 7 >> ~/.cass-memory/reflect.log 2>&1
 ```
 
-## Agent Onboarding
-
-```bash
-# Guided onboarding (no API costs)
-cm onboard
+Or Claude Code post-session hook in `.claude/hooks.json`:
+```json
+{
+  "post-session": ["cm reflect --days 1"]
+}
 ```
 
-## Privacy Controls
+## Integration with CASS
+
+CASS provides **episodic memory** (raw sessions).
+CM extracts **procedural memory** (rules and playbooks).
 
 ```bash
-# View privacy settings
-cm privacy
+# CASS: Search raw sessions
+cass search "authentication timeout" --robot
 
-# Disable cross-agent enrichment
-cm privacy --disable-enrichment
+# CM: Get distilled rules for a task
+cm context "authentication timeout" --json
 ```
 
-## Project Export
+## Data Locations
+
+- Config: `~/.cass-memory/config.yaml`
+- Playbook: `~/.cass-memory/playbook.yaml`
+- Diary: `~/.cass-memory/diary/`
+- Onboarding state: `~/.cass-memory/onboarding-state.json`
+
+## Installation
 
 ```bash
-# Export playbook for project documentation
-cm project --output docs/PATTERNS.md
-```
-
-## Three-Layer Architecture
-
-| Layer | Role | Tool |
-|-------|------|------|
-| **Episodic Memory** | Raw sessions | `cass` |
-| **Working Memory** | Session summaries | Diary entries |
-| **Procedural Memory** | Distilled rules | `cm` playbook |
-
-## Workflow Example
-
-```bash
-# 1. Agent starts a task
-cm context "implement password reset flow" --json
-
-# 2. Agent receives relevant rules and history
-
-# 3. After task, record outcome
-cm outcome success "RULE-123,RULE-456"
-
-# 4. Periodically reflect on sessions
-cm reflect
-
-# 5. New rules are extracted and added to playbook
-```
-
-## Configuration
-
-Config location: `~/.config/cm/` or `.cm/` in project.
-
-```bash
-# Initialize in a project
-cm init
-
-# Initialize with options
-cm init --starter typescript --project-name "MyApp"
+curl -fsSL https://raw.githubusercontent.com/Dicklesworthstone/cass_memory_system/main/install.sh \
+  | bash -s -- --easy-mode --verify
 ```
