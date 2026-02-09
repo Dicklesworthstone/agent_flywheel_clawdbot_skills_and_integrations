@@ -97,6 +97,12 @@ Skills that encode proven workflows and prompts for multi-agent development:
 |-------|-------------|----------|
 | **[csctf](skills/csctf/SKILL.md)** | Chat Shared Conversation To File - convert ChatGPT, Gemini, Grok, and Claude share links to clean Markdown + HTML transcripts | "Save this conversation: https://chatgpt.com/share/..." |
 
+### Communication & Telephony
+
+| Skill | Description | Use Case |
+|-------|-------------|----------|
+| **[clawdtalk](skills/clawdtalk/SKILL.md)** | Phone calling and SMS for OpenClaw. Call your AI agent from any phone with deep tool integration for calendar, Jira, web search, and more. Powered by Telnyx. | "Call my AI agent from mobile to check my schedule" |
+
 ### Development Tools
 
 | Skill | Description | Use Case |
