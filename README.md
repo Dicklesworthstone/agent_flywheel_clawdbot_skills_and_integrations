@@ -345,7 +345,7 @@ More examples...
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) for details.
+MIT License (with OpenAI/Anthropic Rider) — see [LICENSE](LICENSE) for details.
 
 ---
 
