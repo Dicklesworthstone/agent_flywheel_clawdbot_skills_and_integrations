@@ -131,12 +131,12 @@ All robot JSON includes:
 {
   "quick_ref": { "open": 45, "blocked": 12, "top_picks": [...] },
   "recommendations": [
-    { "id": "bd-123", "score": 0.85, "reason": "Unblocks 5 tasks", "unblock_info": {...} }
+    { "id": "br-123", "score": 0.85, "reason": "Unblocks 5 tasks", "unblock_info": {...} }
   ],
   "quick_wins": [...],
   "blockers_to_clear": [...],
   "project_health": { "distributions": {...}, "graph_metrics": {...} },
-  "commands": { "claim": "br update bd-123 --status in_progress", "view": "bv --bead bd-123" }
+  "commands": { "claim": "br update br-123 --status in_progress", "view": "bv --bead br-123" }
 }
 ```
 
@@ -144,12 +144,12 @@ All robot JSON includes:
 
 ```json
 {
-  "bottlenecks": [{ "id": "bd-123", "value": 0.45 }],
-  "keystones": [{ "id": "bd-456", "value": 12.0 }],
+  "bottlenecks": [{ "id": "br-123", "value": 0.45 }],
+  "keystones": [{ "id": "br-456", "value": 12.0 }],
   "influencers": [...],
   "hubs": [...],
   "authorities": [...],
-  "cycles": [["bd-A", "bd-B", "bd-A"]],
+  "cycles": [["br-A", "br-B", "br-A"]],
   "clusterDensity": 0.045,
   "status": { "pagerank": "computed", "betweenness": "computed", ... }
 }
@@ -220,8 +220,8 @@ br init                    # Initialize beads in project
 br create "Task title"     # Create a bead
 br list                    # List beads
 br ready                   # Show actionable beads
-br update bd-123 --status in_progress  # Claim a bead
-br close bd-123            # Close a bead
+br update br-123 --status in_progress  # Claim a bead
+br close br-123            # Close a bead
 br sync --flush-only       # Export DB to JSONL
 git add .beads/            # Stage tracker state
 git commit -m "sync beads" # Commit manually
@@ -242,7 +242,7 @@ send_message(..., thread_id="br-123", subject="[br-123] Starting...")
 bv --robot-graph                              # JSON (default)
 bv --robot-graph --graph-format=dot           # Graphviz DOT
 bv --robot-graph --graph-format=mermaid       # Mermaid diagram
-bv --robot-graph --graph-root=bd-123 --graph-depth=3  # Subgraph
+bv --robot-graph --graph-root=br-123 --graph-depth=3  # Subgraph
 bv --export-graph report.html                 # Interactive HTML
 ```
 

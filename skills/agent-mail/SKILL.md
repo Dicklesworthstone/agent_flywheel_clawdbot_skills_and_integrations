@@ -85,7 +85,7 @@ file_reservation_paths(
   paths=["src/auth/**/*.ts", "src/middleware/auth.ts"],
   ttl_seconds=3600,
   exclusive=true,
-  reason="bd-123"
+  reason="br-123"
 )
 ```
 
@@ -100,9 +100,9 @@ send_message(
   project_key="/abs/path/to/project",
   sender_name="GreenCastle",
   to=["BlueLake"],
-  subject="[bd-123] Starting auth refactor",
+  subject="[br-123] Starting auth refactor",
   body_md="Reserving src/auth/**. Will update session handling.",
-  thread_id="bd-123",
+  thread_id="br-123",
   importance="normal",
   ack_required=true
 )
@@ -179,7 +179,7 @@ Use bv's robot flags for intelligent task selection:
 | `bv --robot-priority` | Recommendations with confidence | "What should I work on next?" |
 | `bv --robot-diff --diff-since <ref>` | Changes since commit/date | "What changed?" |
 
-**Rule of thumb:** Use `bd` for task operations, use `bv` for task intelligence.
+**Rule of thumb:** Use `br` for task operations, use `bv` for task intelligence.
 
 ## Cross-Project Coordination
 
