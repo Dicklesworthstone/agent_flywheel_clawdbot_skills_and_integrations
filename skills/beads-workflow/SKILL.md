@@ -48,7 +48,7 @@ Key properties:
 ### THE EXACT PROMPT — Plan to Beads Conversion (Claude Code + Opus 4.5)
 
 ```
-OK so now read ALL of PLAN_TO_CREATE_GH_PAGES_WEB_EXPORT_APP.md; please take ALL of that and elaborate on it and use it to create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.). The beads should be so detailed that we never need to consult back to the original markdown plan document. Remember to ONLY use the `bd` tool to create and modify the beads and add the dependencies. Use ultrathink.
+OK so now read ALL of PLAN_TO_CREATE_GH_PAGES_WEB_EXPORT_APP.md; please take ALL of that and elaborate on it and use it to create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.). The beads should be so detailed that we never need to consult back to the original markdown plan document. Remember to ONLY use the `br` tool to create and modify the beads and add the dependencies. Use ultrathink.
 ```
 
 **Note:** Replace `PLAN_TO_CREATE_GH_PAGES_WEB_EXPORT_APP.md` with your actual plan filename.
@@ -56,7 +56,7 @@ OK so now read ALL of PLAN_TO_CREATE_GH_PAGES_WEB_EXPORT_APP.md; please take ALL
 ### Alternative Shorter Version
 
 ```
-OK so please take ALL of that and elaborate on it more and then create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.)  Use only the `bd` tool to create and modify the beads and add the dependencies. Use ultrathink.
+OK so please take ALL of that and elaborate on it more and then create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.)  Use only the `br` tool to create and modify the beads and add the dependencies. Use ultrathink.
 ```
 
 ### What This Creates
@@ -90,7 +90,7 @@ Reread AGENTS dot md so it's still fresh in your mind. Check over each bead supe
 
 DO NOT OVERSIMPLIFY THINGS! DO NOT LOSE ANY FEATURES OR FUNCTIONALITY!
 
-Also, make sure that as part of these beads, we include comprehensive unit tests and e2e test scripts with great, detailed logging so we can be sure that everything is working perfectly after implementation. Remember to ONLY use the `bd` tool to create and modify the beads and to add the dependencies to beads. Use ultrathink.
+Also, make sure that as part of these beads, we include comprehensive unit tests and e2e test scripts with great, detailed logging so we can be sure that everything is working perfectly after implementation. Remember to ONLY use the `br` tool to create and modify the beads and to add the dependencies to beads. Use ultrathink.
 ```
 
 ### Polishing Protocol
@@ -116,7 +116,7 @@ First read ALL of the AGENTS dot md file and README dot md file super carefully 
 ### THE EXACT PROMPT — Then Review Beads
 
 ```
-We recently transformed a markdown plan file into a bunch of new beads. I want you to very carefully review and analyze these using `bd` and `bv`.
+We recently transformed a markdown plan file into a bunch of new beads. I want you to very carefully review and analyze these using `br` and `bv`.
 ```
 
 Then follow up with the standard polish prompt.
@@ -149,28 +149,35 @@ Before implementation, verify each bead:
 
 ---
 
-## Using bd (Beads CLI)
+## Using br (Beads CLI)
+
+**Note:** `br` is non-invasive and never executes git commands. After `br sync --flush-only`, you must manually run `git add .beads/ && git commit`.
 
 ### Basic Commands
 
 ```bash
 # Initialize beads in project
-bd init
+br init
 
 # Create a new bead
-bd create "Implement user authentication" -t feature -p 1
+br create "Implement user authentication" -t feature -p 1
 
 # Add dependencies
-bd depend BD-123 BD-100  # BD-123 depends on BD-100
+br dep add BD-123 BD-100  # BD-123 depends on BD-100
 
 # Update status
-bd update BD-123 --status in_progress
+br update BD-123 --status in_progress
 
 # Close a bead
-bd close BD-123 --reason "Completed and tested"
+br close BD-123 --reason "Completed and tested"
 
 # List ready beads (no blockers)
-bd ready --json
+br ready --json
+
+# Sync and commit
+br sync --flush-only
+git add .beads/
+git commit -m "sync beads"
 ```
 
 ### Robot Mode for Agents
@@ -197,28 +204,33 @@ bv --robot-insights
 
 ### Conventions
 
-- Use Beads issue ID as Mail `thread_id`: `send_message(..., thread_id="bd-123")`
-- Prefix subjects: `[bd-123] Starting auth refactor`
-- Include issue ID in file reservation `reason`: `file_reservation_paths(..., reason="bd-123")`
+- Use Beads issue ID as Mail `thread_id`: `send_message(..., thread_id="br-123")`
+- Prefix subjects: `[br-123] Starting auth refactor`
+- Include issue ID in file reservation `reason`: `file_reservation_paths(..., reason="br-123")`
 
 ### Typical Flow
 
 ```bash
 # 1. Pick ready work
-bd ready --json
+br ready --json
 
 # 2. Reserve files
-file_reservation_paths(project_key, agent_name, ["src/**"], reason="bd-123")
+file_reservation_paths(project_key, agent_name, ["src/**"], reason="br-123")
 
 # 3. Announce start
-send_message(..., thread_id="bd-123", subject="[bd-123] Starting work")
+send_message(..., thread_id="br-123", subject="[br-123] Starting work")
 
 # 4. Work on the bead
 # ...
 
 # 5. Complete
-bd close bd-123 --reason "Completed"
+br close br-123 --reason "Completed"
 release_file_reservations(project_key, agent_name)
+
+# 6. Sync and commit
+br sync --flush-only
+git add .beads/
+git commit -m "close br-123"
 ```
 
 ---
@@ -298,12 +310,12 @@ to reduce friction.
 
 ### Plan to Beads (Full)
 ```
-OK so now read ALL of PLAN_TO_CREATE_GH_PAGES_WEB_EXPORT_APP.md; please take ALL of that and elaborate on it and use it to create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.). The beads should be so detailed that we never need to consult back to the original markdown plan document. Remember to ONLY use the `bd` tool to create and modify the beads and add the dependencies. Use ultrathink.
+OK so now read ALL of PLAN_TO_CREATE_GH_PAGES_WEB_EXPORT_APP.md; please take ALL of that and elaborate on it and use it to create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.). The beads should be so detailed that we never need to consult back to the original markdown plan document. Remember to ONLY use the `br` tool to create and modify the beads and add the dependencies. Use ultrathink.
 ```
 
 ### Plan to Beads (Short)
 ```
-OK so please take ALL of that and elaborate on it more and then create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.)  Use only the `bd` tool to create and modify the beads and add the dependencies. Use ultrathink.
+OK so please take ALL of that and elaborate on it more and then create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.)  Use only the `br` tool to create and modify the beads and add the dependencies. Use ultrathink.
 ```
 
 ### Polish Beads (Full)
@@ -317,7 +329,7 @@ Reread AGENTS dot md so it's still fresh in your mind. Check over each bead supe
 
 DO NOT OVERSIMPLIFY THINGS! DO NOT LOSE ANY FEATURES OR FUNCTIONALITY!
 
-Also, make sure that as part of these beads, we include comprehensive unit tests and e2e test scripts with great, detailed logging so we can be sure that everything is working perfectly after implementation. Remember to ONLY use the `bd` tool to create and modify the beads and to add the dependencies to beads. Use ultrathink.
+Also, make sure that as part of these beads, we include comprehensive unit tests and e2e test scripts with great, detailed logging so we can be sure that everything is working perfectly after implementation. Remember to ONLY use the `br` tool to create and modify the beads and to add the dependencies to beads. Use ultrathink.
 ```
 
 ### Fresh Session — Context
@@ -327,7 +339,7 @@ First read ALL of the AGENTS dot md file and README dot md file super carefully 
 
 ### Fresh Session — Review
 ```
-We recently transformed a markdown plan file into a bunch of new beads. I want you to very carefully review and analyze these using `bd` and `bv`.
+We recently transformed a markdown plan file into a bunch of new beads. I want you to very carefully review and analyze these using `br` and `bv`.
 ```
 
 ### Add Test Coverage

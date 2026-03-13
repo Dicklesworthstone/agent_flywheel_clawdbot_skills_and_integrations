@@ -5,18 +5,18 @@ description: "Beads Viewer - Graph-aware triage engine for Beads projects. Compu
 
 # BV - Beads Viewer
 
-A graph-aware triage engine for Beads projects (`.beads/beads.jsonl`). Computes 9 graph metrics, generates execution plans, and provides deterministic recommendations. Human TUI for browsing; robot flags for AI agents.
+A graph-aware triage engine for Beads projects (`.beads/issues.jsonl`). Computes 9 graph metrics, generates execution plans, and provides deterministic recommendations. Human TUI for browsing; robot flags for AI agents.
 
 ## Why BV vs Raw Beads
 
-| Capability | Raw beads.jsonl | BV Robot Mode |
+| Capability | Raw issues.jsonl | BV Robot Mode |
 |------------|-----------------|---------------|
 | Query | "List all issues" | "List the top 5 bottlenecks blocking the release" |
 | Context Cost | High (linear with issue count) | Low (fixed summary struct) |
 | Graph Logic | Agent must compute | Pre-computed (PageRank, betweenness, cycles) |
 | Safety | Agent might miss cycles | Cycles explicitly flagged |
 
-Use BV instead of parsing beads.jsonl directly. It computes graph metrics deterministically.
+Use BV instead of parsing issues.jsonl directly. It computes graph metrics deterministically.
 
 ## CRITICAL: Robot Mode for Agents
 
@@ -121,7 +121,7 @@ bv --robot-triage --robot-triage-by-label    # Group by domain
 ## Robot Output Structure
 
 All robot JSON includes:
-- `data_hash` - Fingerprint of beads.jsonl (verify consistency)
+- `data_hash` - Fingerprint of issues.jsonl (verify consistency)
 - `status` - Per-metric state: `computed|approx|timeout|skipped`
 - `as_of` / `as_of_commit` - Present when using `--as-of`
 
@@ -136,7 +136,7 @@ All robot JSON includes:
   "quick_wins": [...],
   "blockers_to_clear": [...],
   "project_health": { "distributions": {...}, "graph_metrics": {...} },
-  "commands": { "claim": "bd claim bd-123", "view": "bv --bead bd-123" }
+  "commands": { "claim": "br update bd-123 --status in_progress", "view": "bv --bead bd-123" }
 }
 ```
 
@@ -180,12 +180,17 @@ if [ "$CYCLES" != "[]" ]; then
 fi
 
 # 3. Claim the task
-bd claim "$NEXT_TASK"
+br update "$NEXT_TASK" --status in_progress
 
 # 4. Work on it...
 
 # 5. Close when done
-bd close "$NEXT_TASK"
+br close "$NEXT_TASK"
+
+# 6. Sync and commit
+br sync --flush-only
+git add .beads/
+git commit -m "close $NEXT_TASK"
 ```
 
 ## TUI Views (for Humans)
@@ -204,17 +209,22 @@ When running `bv` interactively (not for agents):
 | `f` | Flow matrix (cross-label dependencies) |
 | `]` | Attention view (label priority ranking) |
 
-## Integration with bd CLI
+## Integration with br CLI
 
-BV reads from `.beads/beads.jsonl` created by the `bd` CLI:
+**Note:** `br` is non-invasive and never executes git commands. After `br sync --flush-only`, you must manually run `git add .beads/ && git commit`.
+
+BV reads from `.beads/issues.jsonl` created by the `br` CLI:
 
 ```bash
-bd init                    # Initialize beads in project
-bd create "Task title"     # Create a bead
-bd list                    # List beads
-bd ready                   # Show actionable beads
-bd claim bd-123            # Claim a bead
-bd close bd-123            # Close a bead
+br init                    # Initialize beads in project
+br create "Task title"     # Create a bead
+br list                    # List beads
+br ready                   # Show actionable beads
+br update bd-123 --status in_progress  # Claim a bead
+br close bd-123            # Close a bead
+br sync --flush-only       # Export DB to JSONL
+git add .beads/            # Stage tracker state
+git commit -m "sync beads" # Commit manually
 ```
 
 ## Integration with Agent Mail
@@ -222,8 +232,8 @@ bd close bd-123            # Close a bead
 Use bead IDs as thread IDs for coordination:
 
 ```
-file_reservation_paths(..., reason="bd-123")
-send_message(..., thread_id="bd-123", subject="[bd-123] Starting...")
+file_reservation_paths(..., reason="br-123")
+send_message(..., thread_id="br-123", subject="[br-123] Starting...")
 ```
 
 ## Graph Export Formats
@@ -252,7 +262,7 @@ bv --robot-diff --diff-since HEAD~30  # Changes in last 30 commits
 | Issue | Fix |
 |-------|-----|
 | TUI blocks agent | Use `--robot-*` flags only |
-| Stale metrics | Check `status` field, results cached by `data_hash` |
+| Stale metrics | Check `status` field, results cached by `data_hash` of issues.jsonl |
 | Missing cycles | Run `--robot-insights`, check `.cycles` |
 | Wrong recommendations | Use `--recipe actionable` to filter to ready work |
 
@@ -260,5 +270,5 @@ bv --robot-diff --diff-since HEAD~30  # Changes in last 30 commits
 
 - Phase 1 metrics (degree, topo, density): instant
 - Phase 2 metrics (PageRank, betweenness, etc.): 500ms timeout
-- Results cached by `data_hash`
+- Results cached by `data_hash` of issues.jsonl
 - Prefer `--robot-plan` over `--robot-insights` when speed matters

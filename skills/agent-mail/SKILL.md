@@ -145,23 +145,26 @@ Prefer macros for speed and smaller models. Use granular tools when you need fin
 | `macro_file_reservation_cycle` | Reserve files, do work, optionally auto-release when done |
 | `macro_contact_handshake` | Request contact permission, optionally auto-accept, send welcome message |
 
-## Beads Integration (bd-### Workflow)
+## Beads Integration (br-### Workflow)
 
 When using Beads for task management, keep identifiers aligned:
 
 ```
-1. Pick ready work:     bd ready --json → choose bd-123
-2. Reserve files:       file_reservation_paths(..., reason="bd-123")
-3. Announce start:      send_message(..., thread_id="bd-123", subject="[bd-123] Starting...")
+1. Pick ready work:     br ready --json → choose br-123
+2. Reserve files:       file_reservation_paths(..., reason="br-123")
+3. Announce start:      send_message(..., thread_id="br-123", subject="[br-123] Starting...")
 4. Work and update:     Reply in thread with progress
-5. Complete:            bd close bd-123
+5. Complete:            br close br-123
                         release_file_reservations(...)
-                        send_message(..., subject="[bd-123] Completed")
+                        send_message(..., subject="[br-123] Completed")
+6. Sync and commit:     br sync --flush-only
+                        git add .beads/
+                        git commit -m "close br-123"
 ```
 
-Use `bd-###` as:
+Use `br-###` as:
 - Mail `thread_id`
-- Message subject prefix `[bd-###]`
+- Message subject prefix `[br-###]`
 - File reservation `reason`
 - Commit message reference
 
