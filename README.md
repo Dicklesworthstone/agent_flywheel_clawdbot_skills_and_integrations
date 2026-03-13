@@ -63,6 +63,7 @@ Skills that encode proven workflows and prompts for multi-agent development:
 | **[ui-ux-polish](skills/ui-ux-polish/SKILL.md)** | Iterative Stripe-level UI polish with exact prompt | "Make this look world-class" |
 | **[de-slopify](skills/de-slopify/SKILL.md)** | Remove AI writing artifacts from documentation | "Clean up the AI slop in this README" |
 | **[tanstack-integration](skills/tanstack-integration/SKILL.md)** | Strategic TanStack library adoption (avoid man-with-hammer) | "Should I use TanStack Query here?" |
+| **[bd-to-br-migration](skills/bd-to-br-migration/SKILL.md)** | Migrate docs from bd (Go) to br (beads_rust) with exact transforms | "Migrate AGENTS.md from bd to br" |
 
 ### Discord Integration
 
