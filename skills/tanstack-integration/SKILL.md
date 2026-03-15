@@ -245,10 +245,10 @@ const table = useReactTable({
 ## Creating Beads for TanStack Work
 
 ```bash
-bd create "Evaluate TanStack Query opportunities" -t enhancement -p 3
-bd create "Migrate user data fetching to TanStack Query" -t enhancement -p 2
-bd create "Implement data table with TanStack Table" -t feature -p 2
-bd create "Add TanStack Virtual to chat message list" -t performance -p 2
+br create "Evaluate TanStack Query opportunities" -t enhancement -p 3
+br create "Migrate user data fetching to TanStack Query" -t enhancement -p 2
+br create "Implement data table with TanStack Table" -t feature -p 2
+br create "Add TanStack Virtual to chat message list" -t performance -p 2
 ```
 
 ---

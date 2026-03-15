@@ -248,7 +248,7 @@ ntm --robot-health              # Project health
 ntm --robot-send=SESSION --msg="Fix auth" --type=claude
 ntm --robot-spawn=SESSION --spawn-cc=2 --spawn-wait
 ntm --robot-interrupt=SESSION
-ntm --robot-assign=SESSION --assign-beads=bd-1,bd-2
+ntm --robot-assign=SESSION --assign-beads=br-1,br-2
 ntm --robot-replay=SESSION --replay-id=ID
 ```
 

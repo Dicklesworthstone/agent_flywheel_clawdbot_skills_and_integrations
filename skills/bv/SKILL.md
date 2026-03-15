@@ -131,12 +131,12 @@ All robot JSON includes:
 {
   "quick_ref": { "open": 45, "blocked": 12, "top_picks": [...] },
   "recommendations": [
-    { "id": "bd-123", "score": 0.85, "reason": "Unblocks 5 tasks", "unblock_info": {...} }
+    { "id": "br-123", "score": 0.85, "reason": "Unblocks 5 tasks", "unblock_info": {...} }
   ],
   "quick_wins": [...],
   "blockers_to_clear": [...],
   "project_health": { "distributions": {...}, "graph_metrics": {...} },
-  "commands": { "claim": "bd claim bd-123", "view": "bv --bead bd-123" }
+  "commands": { "claim": "br claim br-123", "view": "bv --bead br-123" }
 }
 ```
 
@@ -144,12 +144,12 @@ All robot JSON includes:
 
 ```json
 {
-  "bottlenecks": [{ "id": "bd-123", "value": 0.45 }],
-  "keystones": [{ "id": "bd-456", "value": 12.0 }],
+  "bottlenecks": [{ "id": "br-123", "value": 0.45 }],
+  "keystones": [{ "id": "br-456", "value": 12.0 }],
   "influencers": [...],
   "hubs": [...],
   "authorities": [...],
-  "cycles": [["bd-A", "bd-B", "bd-A"]],
+  "cycles": [["br-A", "br-B", "br-A"]],
   "clusterDensity": 0.045,
   "status": { "pagerank": "computed", "betweenness": "computed", ... }
 }
@@ -180,12 +180,12 @@ if [ "$CYCLES" != "[]" ]; then
 fi
 
 # 3. Claim the task
-bd claim "$NEXT_TASK"
+br claim "$NEXT_TASK"
 
 # 4. Work on it...
 
 # 5. Close when done
-bd close "$NEXT_TASK"
+br close "$NEXT_TASK"
 ```
 
 ## TUI Views (for Humans)
@@ -204,17 +204,17 @@ When running `bv` interactively (not for agents):
 | `f` | Flow matrix (cross-label dependencies) |
 | `]` | Attention view (label priority ranking) |
 
-## Integration with bd CLI
+## Integration with br CLI
 
-BV reads from `.beads/beads.jsonl` created by the `bd` CLI:
+BV reads from `.beads/beads.jsonl` created by the `br` CLI:
 
 ```bash
-bd init                    # Initialize beads in project
-bd create "Task title"     # Create a bead
-bd list                    # List beads
-bd ready                   # Show actionable beads
-bd claim bd-123            # Claim a bead
-bd close bd-123            # Close a bead
+br init                    # Initialize beads in project
+br create "Task title"     # Create a bead
+br list                    # List beads
+br ready                   # Show actionable beads
+br claim br-123            # Claim a bead
+br close br-123            # Close a bead
 ```
 
 ## Integration with Agent Mail
@@ -222,8 +222,8 @@ bd close bd-123            # Close a bead
 Use bead IDs as thread IDs for coordination:
 
 ```
-file_reservation_paths(..., reason="bd-123")
-send_message(..., thread_id="bd-123", subject="[bd-123] Starting...")
+file_reservation_paths(..., reason="br-123")
+send_message(..., thread_id="br-123", subject="[br-123] Starting...")
 ```
 
 ## Graph Export Formats
@@ -232,7 +232,7 @@ send_message(..., thread_id="bd-123", subject="[bd-123] Starting...")
 bv --robot-graph                              # JSON (default)
 bv --robot-graph --graph-format=dot           # Graphviz DOT
 bv --robot-graph --graph-format=mermaid       # Mermaid diagram
-bv --robot-graph --graph-root=bd-123 --graph-depth=3  # Subgraph
+bv --robot-graph --graph-root=br-123 --graph-depth=3  # Subgraph
 bv --export-graph report.html                 # Interactive HTML
 ```
 

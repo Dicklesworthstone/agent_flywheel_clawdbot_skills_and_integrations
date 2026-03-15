@@ -85,7 +85,7 @@ file_reservation_paths(
   paths=["src/auth/**/*.ts", "src/middleware/auth.ts"],
   ttl_seconds=3600,
   exclusive=true,
-  reason="bd-123"
+  reason="br-123"
 )
 ```
 
@@ -100,9 +100,9 @@ send_message(
   project_key="/abs/path/to/project",
   sender_name="GreenCastle",
   to=["BlueLake"],
-  subject="[bd-123] Starting auth refactor",
+  subject="[br-123] Starting auth refactor",
   body_md="Reserving src/auth/**. Will update session handling.",
-  thread_id="bd-123",
+  thread_id="br-123",
   importance="normal",
   ack_required=true
 )
@@ -145,23 +145,23 @@ Prefer macros for speed and smaller models. Use granular tools when you need fin
 | `macro_file_reservation_cycle` | Reserve files, do work, optionally auto-release when done |
 | `macro_contact_handshake` | Request contact permission, optionally auto-accept, send welcome message |
 
-## Beads Integration (bd-### Workflow)
+## Beads Integration (br-### Workflow)
 
 When using Beads for task management, keep identifiers aligned:
 
 ```
-1. Pick ready work:     bd ready --json → choose bd-123
-2. Reserve files:       file_reservation_paths(..., reason="bd-123")
-3. Announce start:      send_message(..., thread_id="bd-123", subject="[bd-123] Starting...")
+1. Pick ready work:     br ready --json → choose br-123
+2. Reserve files:       file_reservation_paths(..., reason="br-123")
+3. Announce start:      send_message(..., thread_id="br-123", subject="[br-123] Starting...")
 4. Work and update:     Reply in thread with progress
-5. Complete:            bd close bd-123
+5. Complete:            br close br-123
                         release_file_reservations(...)
-                        send_message(..., subject="[bd-123] Completed")
+                        send_message(..., subject="[br-123] Completed")
 ```
 
-Use `bd-###` as:
+Use `br-###` as:
 - Mail `thread_id`
-- Message subject prefix `[bd-###]`
+- Message subject prefix `[br-###]`
 - File reservation `reason`
 - Commit message reference
 
@@ -176,7 +176,7 @@ Use bv's robot flags for intelligent task selection:
 | `bv --robot-priority` | Recommendations with confidence | "What should I work on next?" |
 | `bv --robot-diff --diff-since <ref>` | Changes since commit/date | "What changed?" |
 
-**Rule of thumb:** Use `bd` for task operations, use `bv` for task intelligence.
+**Rule of thumb:** Use `br` for task operations, use `bv` for task intelligence.
 
 ## Cross-Project Coordination
 

@@ -192,10 +192,10 @@ These small changes compound. An app after 10 passes looks dramatically better t
 For systematic UI/UX work, create beads:
 
 ```bash
-bd create "Polish homepage UI/UX for desktop" -t enhancement -p 2
-bd create "Polish homepage UI/UX for mobile" -t enhancement -p 2
-bd create "Polish dashboard UI/UX for desktop" -t enhancement -p 2
-bd create "Polish dashboard UI/UX for mobile" -t enhancement -p 2
+br create "Polish homepage UI/UX for desktop" -t enhancement -p 2
+br create "Polish homepage UI/UX for mobile" -t enhancement -p 2
+br create "Polish dashboard UI/UX for desktop" -t enhancement -p 2
+br create "Polish dashboard UI/UX for mobile" -t enhancement -p 2
 ```
 
 This lets agents work on UI/UX polish as part of the normal bead workflow.

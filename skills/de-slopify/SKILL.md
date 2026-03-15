@@ -182,8 +182,8 @@ Install the tool and run your first command in under a minute.
 ### As Part of Bead Workflow
 
 ```bash
-bd create "De-slopify README.md" -t docs -p 3
-bd create "De-slopify API documentation" -t docs -p 3
+br create "De-slopify README.md" -t docs -p 3
+br create "De-slopify API documentation" -t docs -p 3
 ```
 
 ### As Final Pass Before Commit

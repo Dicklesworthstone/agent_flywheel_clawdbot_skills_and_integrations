@@ -202,7 +202,7 @@ file_reservation_paths(
     paths=["src/auth/**/*.ts"],
     ttl_seconds=3600,
     exclusive=True,
-    reason="bd-123"
+    reason="br-123"
 )
 
 # After completing work
@@ -216,18 +216,18 @@ release_file_reservations(project_key, agent_name)
 send_message(
     project_key, agent_name,
     to=["BlueLake", "RedMountain"],  # Other active agents
-    subject="[bd-123] Starting auth module",
-    body_md="I'm taking bd-123. Reserved src/auth/**.",
-    thread_id="bd-123"
+    subject="[br-123] Starting auth module",
+    body_md="I'm taking br-123. Reserved src/auth/**.",
+    thread_id="br-123"
 )
 
 # Update on completion
 send_message(
     project_key, agent_name,
     to=["BlueLake", "RedMountain"],
-    subject="[bd-123] Completed",
+    subject="[br-123] Completed",
     body_md="Auth module done and tested. Released file reservations.",
-    thread_id="bd-123"
+    thread_id="br-123"
 )
 ```
 
