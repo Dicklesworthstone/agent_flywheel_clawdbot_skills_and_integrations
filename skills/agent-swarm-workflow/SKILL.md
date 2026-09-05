@@ -1,11 +1,11 @@
 ---
 name: agent-swarm-workflow
-description: "Jeffrey Emanuel's multi-agent implementation workflow using NTM, Agent Mail, Beads, and BV. The execution phase that follows planning and bead creation. Includes exact prompts used."
+description: "Coordinate requested multi-agent implementation with NTM, Agent Mail, and Beads."
 ---
 
 # Agent Swarm Workflow — Parallel Implementation
 
-> **Core Insight:** Every agent is fungible and a generalist. They all use the same base model and read the same AGENTS.md. Simply telling one it's a "frontend agent" doesn't make it better at frontend.
+> **Core Insight:** Interchangeable agents simplify handoffs when their capabilities and permissions fit the assigned tasks. Match ownership and verification to the work, including independent review when needed.
 >
 > The swarm is distributed, robust, and self-organizing through Agent Mail and Beads.
 
@@ -13,11 +13,15 @@ description: "Jeffrey Emanuel's multi-agent implementation workflow using NTM, A
 
 ## Prerequisites
 
+Prompt templates below are adaptable examples within the requested swarm scope.
+Use each harness's available reasoning controls; wording such as "ultrathink"
+does not set a portable mode. Each agent needs an explicit task and ownership.
+
 Before starting a swarm:
 
 1. **Comprehensive plan** created (see `planning-workflow` skill)
 2. **Polished beads** ready (see `beads-workflow` skill)
-3. **AGENTS.md** configured with all tool blurbs
+3. **AGENTS.md** provides local context and routes to relevant tool guidance
 4. **Agent Mail server** running (`am` or `~/projects/mcp_agent_mail/scripts/run_server_with_token.sh`)
 5. **NTM** available for session management
 
@@ -71,52 +75,52 @@ Create tmux sessions/panes for each agent in your project folder.
 
 ---
 
-## THE EXACT PROMPT — Initial Agent Marching Orders
+## Example Prompt — Initial Agent Marching Orders
 
 Give each agent this EXACT prompt to start:
 
 ```
-First read ALL of the AGENTS dot md file and README dot md file super carefully and understand ALL of both! Then use your code investigation agent mode to fully understand the code, and technical architecture and purpose of the project. Then register with MCP Agent Mail and introduce yourself to the other agents.
+Read the applicable AGENTS.md and the documentation needed for your assigned task. Inspect affected code and its contracts. For a shared swarm, register with Agent Mail and check ownership before editing.
 
 Be sure to check your agent mail and to promptly respond if needed to any messages; then proceed meticulously with your next assigned beads, working on the tasks systematically and meticulously and tracking your progress via beads and agent mail messages.
 
 Don't get stuck in "communication purgatory" where nothing is getting done; be proactive about starting tasks that need to be done, but inform your fellow agents via messages when you do so and mark beads appropriately.
 
-When you're not sure what to do next, use the bv tool mentioned in AGENTS dot md to prioritize the best beads to work on next; pick the next one that you can usefully work on and get started. Make sure to acknowledge all communication requests from other agents and that you are aware of all active agents and their names.  Use ultrathink.
+Choose ready work within the assigned scope using bv robot output. Check ownership, mark progress, and respond to relevant coordination messages. Once assigned work is complete, report the result and hand off remaining state.
 ```
 
 ---
 
 ## The Implementation Loop
 
-### THE EXACT PROMPT — Move to Next Bead
+### Example Prompt — Move to Next Bead
 
 Once agents complete a bead, use this prompt to keep them moving:
 
 ```
-Reread AGENTS dot md so it's still fresh in your mind.   Use ultrathink.   Use bv with the robot flags (see AGENTS dot md for info on this) to find the most impactful bead(s) to work on next and then start on it. Remember to mark the beads appropriately and communicate with your fellow agents. Pick the next bead you can actually do usefully now and start coding on it immediately; communicate what you're working on to your fellow agents and mark beads appropriately as you work. And respond to any agent mail messages you've received.
+Check applicable instructions if they changed. Use bv robot output to select ready work within the assigned scope, confirm ownership, and update task state. Finish when the assigned work and verification are complete.
 ```
 
-### THE EXACT PROMPT — Self-Review After Bead Completion
+### Example Prompt — Self-Review After Bead Completion
 
 Have agents review their work before moving on:
 
 ```
-Great, now I want you to carefully read over all of the new code you just wrote and other existing code you just modified with "fresh eyes" looking super carefully for any obvious bugs, errors, problems, issues, confusion, etc. Carefully fix anything you uncover. Use ultrathink.
+Great, now I want you to carefully read over all of the new code you just wrote and other existing code you just modified with "fresh eyes" looking super carefully for any obvious bugs, errors, problems, issues, confusion, etc. Carefully fix anything you uncover.
 ```
 
-**Keep running this until they stop finding bugs.**
+**Stop when scoped findings are resolved and relevant checks pass. Repeat only after changes or new evidence.**
 
 ---
 
 ## Handling Context Compaction
 
-### THE EXACT PROMPT — Post-Compaction
+### Example Prompt — Post-Compaction
 
 When an agent does a compaction, immediately follow up with:
 
 ```
-Reread AGENTS dot md so it's still fresh in your mind.   Use ultrathink.
+After compaction, recover applicable instructions, current task state, ownership, and remaining verification before continuing.
 ```
 
 This re-establishes the critical context about tools and workflows.
@@ -125,58 +129,60 @@ This re-establishes the critical context about tools and workflows.
 
 ## Quality Review Prompts
 
-### THE EXACT PROMPT — Cross-Agent Review
+### Example Prompt — Cross-Agent Review
 
 Periodically have agents review each other's work:
 
 ```
-Ok can you now turn your attention to reviewing the code written by your fellow agents and checking for any issues, bugs, errors, problems, inefficiencies, security problems, reliability issues, etc. and carefully diagnose their underlying root causes using first-principle analysis and then fix or revise them if necessary? Don't restrict yourself to the latest commits, cast a wider net and go super deep! Use ultrathink.
+Review this task’s changes and affected callers. Report evidence. Fix confirmed defects within assigned ownership and scope; report unrelated findings for follow-up.
 ```
 
-### THE EXACT PROMPT — Random Code Exploration
+### Example Prompt — Random Code Exploration
 
 For deep quality checks:
 
 ```
-I want you to sort of randomly explore the code files in this project, choosing code files to deeply investigate and understand and trace their functionality and execution flows through the related code files which they import or which they are imported by.
+When broader exploration is requested, inspect code paths and dependencies within the requested area.
 
-Once you understand the purpose of the code in the larger context of the workflows, I want you to do a super careful, methodical, and critical check with "fresh eyes" to find any obvious bugs, problems, errors, issues, silly mistakes, etc. and then systematically and meticulously and intelligently correct them.
+Report concrete findings and impact. Apply fixes only within requested scope and assigned file ownership.
 
-Be sure to comply with ALL rules in AGENTS dot md and ensure that any code you write or revise conforms to the best practice guides referenced in the AGENTS dot md file. Use ultrathink.
+Be sure to comply with ALL rules in AGENTS dot md and ensure that any code you write or revise conforms to the best practice guides referenced in the AGENTS dot md file.
 ```
 
 ---
 
 ## Committing Work
 
-### THE EXACT PROMPT — Commit Changes
+### Example Prompt — Commit Changes
 
 Have agents commit logically grouped changes:
 
 ```
-Now, based on your knowledge of the project, commit all changed files now in a series of logically connected groupings with super detailed commit messages for each and then push. Take your time to do it right. Don't edit the code at all. Don't commit obviously ephemeral files. Use ultrathink.
+Inspect the diff and commit only changes owned by this task in logical groups. Preserve unrelated work. Verify the remote and follow repository landing policy; push only when the task authorizes publishing.
 ```
 
 ---
 
-## Post-Bead Completion Prompts
+## Optional Follow-Up Prompts
 
-### THE EXACT PROMPT — Add Test Coverage
+Use these only for separately assigned follow-up work. Completing a bead does not authorize broader testing or UI changes.
 
-```
-Do we have full unit test coverage without using mocks/fake stuff? What about complete e2e integration test scripts with great, detailed logging? If not, then create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid with detailed comments.
-```
-
-### THE EXACT PROMPT — UI/UX Scrutiny
+### Example Prompt — Add Test Coverage
 
 ```
-Great, now I want you to super carefully scrutinize every aspect of the application workflow and implementation and look for things that just seem sub-optimal or even wrong/mistaken to you, things that could very obviously be improved from a user-friendliness and intuitiveness standpoint, places where our UI/UX could be improved and polished to be slicker, more visually appealing, and more premium feeling and just ultra high quality, like Stripe-level apps.
+Check the requested behavior and material regression risks have appropriate unit or integration coverage. Add checks within scope; create follow-up tasks only when authorized.
 ```
 
-### THE EXACT PROMPT — Deep UI/UX Enhancement
+### Example Prompt — UI/UX Scrutiny
 
 ```
-I still think there are strong opportunities to enhance the UI/UX look and feel and to make everything work better and be more intuitive, user-friendly, visually appealing, polished, slick, and world class in terms of following UI/UX best practices like those used by Stripe, don't you agree? And I want you to carefully consider desktop UI/UX and mobile UI/UX separately while doing this and hyper-optimize for both separately to play to the specifics of each modality. I'm looking for true world-class visual appeal, polish, slickness, etc. that makes people gasp at how stunning and perfect it is in every way.  Use ultrathink.
+Review the assigned interface and report concrete usability, accessibility, or visual defects against its acceptance criteria. Make changes only when authorized, verify affected desktop and mobile behavior, and stop when the assigned criteria are satisfied.
+```
+
+### Example Prompt — Deep UI/UX Enhancement
+
+```
+For the authorized UI improvement, inspect desktop and mobile separately. Fix observed problems within the assigned scope and verify the result. Return remaining concerns without expanding the assignment.
 ```
 
 ---
@@ -262,15 +268,15 @@ bv --robot-insights | jq '.bottlenecks'
 
 ### Run Until Clean
 
-Keep running these prompts in rounds until they consistently come back with no changes:
+Choose the review appropriate to the changed area. Repeat only when a fix or new evidence requires another check:
 
 1. **Self-review** — Agent reviews own code
 2. **Cross-review** — Agent reviews other agents' code
-3. **Random exploration** — Deep dive into random code paths
+3. **Broader exploration** — Only when requested, with a defined area and stopping point
 
 ### The Steady-State Signal
 
-When all three types of reviews return clean (no bugs found, no changes made), the code is likely solid.
+Finish when acceptance criteria and configured checks pass, scoped findings are resolved, and ownership and handoff state are clear. Report unrelated findings without expanding the task.
 
 ---
 
@@ -278,62 +284,62 @@ When all three types of reviews return clean (no bugs found, no changes made), t
 
 ### Initial Marching Orders
 ```
-First read ALL of the AGENTS dot md file and README dot md file super carefully and understand ALL of both! Then use your code investigation agent mode to fully understand the code, and technical architecture and purpose of the project. Then register with MCP Agent Mail and introduce yourself to the other agents.
+Read the applicable AGENTS.md and the documentation needed for your assigned task. Inspect affected code and its contracts. For a shared swarm, register with Agent Mail and check ownership before editing.
 
 Be sure to check your agent mail and to promptly respond if needed to any messages; then proceed meticulously with your next assigned beads, working on the tasks systematically and meticulously and tracking your progress via beads and agent mail messages.
 
 Don't get stuck in "communication purgatory" where nothing is getting done; be proactive about starting tasks that need to be done, but inform your fellow agents via messages when you do so and mark beads appropriately.
 
-When you're not sure what to do next, use the bv tool mentioned in AGENTS dot md to prioritize the best beads to work on next; pick the next one that you can usefully work on and get started. Make sure to acknowledge all communication requests from other agents and that you are aware of all active agents and their names.  Use ultrathink.
+Choose ready work within the assigned scope using bv robot output. Check ownership, mark progress, and respond to relevant coordination messages. Once assigned work is complete, report the result and hand off remaining state.
 ```
 
 ### Move to Next Bead
 ```
-Reread AGENTS dot md so it's still fresh in your mind.   Use ultrathink.   Use bv with the robot flags (see AGENTS dot md for info on this) to find the most impactful bead(s) to work on next and then start on it. Remember to mark the beads appropriately and communicate with your fellow agents. Pick the next bead you can actually do usefully now and start coding on it immediately; communicate what you're working on to your fellow agents and mark beads appropriately as you work. And respond to any agent mail messages you've received.
+Check applicable instructions if they changed. Use bv robot output to select ready work within the assigned scope, confirm ownership, and update task state. Finish when the assigned work and verification are complete.
 ```
 
 ### Self-Review
 ```
-Great, now I want you to carefully read over all of the new code you just wrote and other existing code you just modified with "fresh eyes" looking super carefully for any obvious bugs, errors, problems, issues, confusion, etc. Carefully fix anything you uncover. Use ultrathink.
+Great, now I want you to carefully read over all of the new code you just wrote and other existing code you just modified with "fresh eyes" looking super carefully for any obvious bugs, errors, problems, issues, confusion, etc. Carefully fix anything you uncover.
 ```
 
 ### Cross-Review
 ```
-Ok can you now turn your attention to reviewing the code written by your fellow agents and checking for any issues, bugs, errors, problems, inefficiencies, security problems, reliability issues, etc. and carefully diagnose their underlying root causes using first-principle analysis and then fix or revise them if necessary? Don't restrict yourself to the latest commits, cast a wider net and go super deep! Use ultrathink.
+Review this task’s changes and affected callers. Report evidence. Fix confirmed defects within assigned ownership and scope; report unrelated findings for follow-up.
 ```
 
 ### Random Exploration
 ```
-I want you to sort of randomly explore the code files in this project, choosing code files to deeply investigate and understand and trace their functionality and execution flows through the related code files which they import or which they are imported by.
+When broader exploration is requested, inspect code paths and dependencies within the requested area.
 
-Once you understand the purpose of the code in the larger context of the workflows, I want you to do a super careful, methodical, and critical check with "fresh eyes" to find any obvious bugs, problems, errors, issues, silly mistakes, etc. and then systematically and meticulously and intelligently correct them.
+Report concrete findings and impact. Apply fixes only within requested scope and assigned file ownership.
 
-Be sure to comply with ALL rules in AGENTS dot md and ensure that any code you write or revises conforms to the best practice guides referenced in the AGENTS dot md file. Use ultrathink.
+Be sure to comply with ALL rules in AGENTS dot md and ensure that any code you write or revises conforms to the best practice guides referenced in the AGENTS dot md file.
 ```
 
 ### Post-Compaction
 ```
-Reread AGENTS dot md so it's still fresh in your mind.   Use ultrathink.
+After compaction, recover applicable instructions, current task state, ownership, and remaining verification before continuing.
 ```
 
 ### Commit Changes
 ```
-Now, based on your knowledge of the project, commit all changed files now in a series of logically connected groupings with super detailed commit messages for each and then push. Take your time to do it right. Don't edit the code at all. Don't commit obviously ephemeral files. Use ultrathink.
+Inspect the diff and commit only changes owned by this task in logical groups. Preserve unrelated work. Verify the remote and follow repository landing policy; push only when the task authorizes publishing.
 ```
 
 ### Test Coverage
 ```
-Do we have full unit test coverage without using mocks/fake stuff? What about complete e2e integration test scripts with great, detailed logging? If not, then create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid with detailed comments.
+Check the requested behavior and material regression risks have appropriate unit or integration coverage. Add checks within scope; create follow-up tasks only when authorized.
 ```
 
 ### UI/UX Scrutiny
 ```
-Great, now I want you to super carefully scrutinize every aspect of the application workflow and implementation and look for things that just seem sub-optimal or even wrong/mistaken to you, things that could very obviously be improved from a user-friendliness and intuitiveness standpoint, places where our UI/UX could be improved and polished to be slicker, more visually appealing, and more premium feeling and just ultra high quality, like Stripe-level apps.
+Review the assigned interface and report concrete usability, accessibility, or visual defects against its acceptance criteria. Make changes only when authorized, verify affected desktop and mobile behavior, and stop when the assigned criteria are satisfied.
 ```
 
 ### Deep UI/UX Enhancement
 ```
-I still think there are strong opportunities to enhance the UI/UX look and feel and to make everything work better and be more intuitive, user-friendly, visually appealing, polished, slick, and world class in terms of following UI/UX best practices like those used by Stripe, don't you agree? And I want you to carefully consider desktop UI/UX and mobile UI/UX separately while doing this and hyper-optimize for both separately to play to the specifics of each modality. I'm looking for true world-class visual appeal, polish, slickness, etc. that makes people gasp at how stunning and perfect it is in every way.  Use ultrathink.
+For the authorized UI improvement, inspect desktop and mobile separately. Fix observed problems within the assigned scope and verify the result. Return remaining concerns without expanding the assignment.
 ```
 
 ---
@@ -372,13 +378,13 @@ A: File reservations in Agent Mail. Exclusive reservations block others; the pre
 A: Every agent is fungible. Start a new session, read AGENTS.md, check bead status, continue.
 
 **Q: How many agents should I run?**
-A: Depends on project complexity. Start with 3-6. More agents = faster but more coordination overhead.
+A: Start with the smallest team that can perform the assigned independent work. Add an agent only when a bounded parallel task justifies the coordination cost.
 
 **Q: What model mix works best?**
-A: Mix recommended. Try 3 Claude Code (Opus), 2 Codex (GPT 5.2), 1 Gemini. They have different strengths.
+A: Choose available models by task requirements, tool access, and observed results. No fixed model mix is required.
 
 **Q: Do agents need individual areas of expertise?**
-A: No, every agent is fungible and a generalist. Simply telling one it's a frontend agent doesn't make it better at frontend.
+A: Use interchangeable agents when their capabilities fit. Specialized ownership can help with permissions, expertise, or independent review.
 
 **Q: Is there traceability between git commit and bead?**
 A: Yes, bv automatically does this analysis and links beads to relevant git commits by analyzing the stream of data and making logical deductions.

@@ -34,7 +34,7 @@ When blocked, follow this sequence every time:
 
 ```
 1. Run `dcg explain "cmd"` → Understand why (see trace)
-2. Check Safe Alternatives table → Use if exists (DON'T mention override)
+2. Check Safe Alternatives table → Use an authorized alternative that preserves the requested outcome
 3. No alternative? → Explain risk clearly, let human decide
 4. Human approves? → THEY run: dcg allow-once CODE
 ```
@@ -54,6 +54,11 @@ Safer alternative: git stash
 > "I wanted to discard changes but `git reset --hard` was blocked. Let me use `git stash` instead—recoverable if needed." [proceeds with stash]
 
 ## Safe Alternatives
+
+These options reduce risk; they do not grant permission. Previews are read-only,
+but force-with-lease, selective deletion, and stashing still change state.
+Resolve the exact target and existing task authority before using an alternative.
+If destructive action lacks authorization, explain the consequence and ask first.
 
 | Blocked | Use Instead | Why |
 |---------|-------------|-----|

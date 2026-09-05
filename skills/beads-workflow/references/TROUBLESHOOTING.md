@@ -17,28 +17,26 @@ Error pulling from sync branch: failed to create worktree: exit status 128
 fatal: 'main' is already checked out at '/path/to/repo'
 ```
 
-Beads uses git worktrees for sync operations. If your `sync.branch` points to your current branch, git cannot create a worktree for it.
+Some Beads implementations use Git worktrees for sync operations. Inspect the
+installed tool and repository configuration before applying a fix. `br sync`
+does not run Git commands, so trace this error to the actual caller.
 
 ### The Fix
 
-Create a dedicated sync branch that you never check out directly:
+Only when the installed tool requires a dedicated sync branch and configuration
+changes and publication are authorized, adapt this example to verified names:
 
 ```bash
-git branch beads-sync main
-git push -u origin beads-sync
-br config set sync.branch beads-sync
+git branch beads-sync main  # Only if the branch does not already exist
+git remote -v              # Verify the intended remote
+git push -u origin beads-sync:refs/heads/beads-sync
+# Set the sync branch using the installed tool's documented configuration command.
 ```
 
 ### For New Projects
 
-Always configure a dedicated sync branch during setup:
-
-```bash
-br init
-git branch beads-sync main
-git push -u origin beads-sync
-br config set sync.branch beads-sync
-```
+Initialize issue storage only when requested. Follow the repository's installed
+tool contract; do not add a sync branch unless that implementation needs one.
 
 ---
 
@@ -49,13 +47,13 @@ br config set sync.branch beads-sync
 | Command | What it does |
 |:--------|:-------------|
 | `br sync --flush-only` | Export to JSONL only (no git operations) |
-| `br sync` | Full sync: export, commit, push |
+| `br sync` | Local synchronization; inspect `br sync --help` for modes; no Git operations |
 
 ### Check Sync Branch Configuration
 
 ```bash
-br config get sync.branch          # Should NOT be your current branch
-git branch                         # Verify sync branch exists
+br config list                     # Inspect supported configuration
+git branch                         # Inspect branches if the workflow uses one
 git ls-remote --heads origin beads-sync  # Verify on remote
 ```
 
@@ -63,23 +61,25 @@ git ls-remote --heads origin beads-sync  # Verify on remote
 
 ## br vs bd Migration
 
-The Rust CLI (`br`) replaced the Go CLI (`bd`). Command mapping:
+The repository may use upstream `bd`, `br`, or a `bd` compatibility shim.
+Detect the implementation first. These are candidate equivalents for an
+authorized migration, not instructions to replace every `bd` reference:
 
 | Old (bd) | New (br) | Notes |
 |:---------|:---------|:------|
-| `bd init` | `br init` | Same |
-| `bd create "Title"` | `br create "Title"` | Same |
-| `bd sync` | `br sync` | Same |
-| `bd sync --flush-only` | `br sync --flush-only` | Same |
-| `bd list` | `br list` | Same |
-| `bd config` | `br config` | Same |
+| `bd init` | `br init` | Check storage format and options |
+| `bd create "Title"` | `br create "Title"` | Check required fields and flags |
+| `bd sync` | Inspect `br sync --help` | Git delivery remains separate |
+| `bd sync --flush-only` | `br sync --flush-only` | Verify export path and safe-write procedure |
+| `bd list` | `br list` | Check filters and output format |
+| `bd config` | `br config` | Inspect supported keys |
 
 ### If you have both installed
 
-Make sure `br` is in your PATH and takes precedence:
+Use the implementation selected by the repository; inspect rather than change PATH:
 
 ```bash
-which br    # Should be beads_rust
+command -v bd br
 br --version
 ```
 
@@ -89,10 +89,10 @@ br --version
 
 | Problem | Diagnosis | Fix |
 |:--------|:----------|:----|
-| Worktree errors | `br config get sync.branch` returns current branch | Create dedicated sync branch |
-| Sync branch missing | `git ls-remote --heads origin beads-sync` empty | `git push -u origin beads-sync` |
-| br not found | `which br` returns nothing | Install beads_rust, add to PATH |
-| Cycles in graph | `br dep cycles` not empty | Review dependencies, remove cycle |
+| Worktree errors | Inspect caller and installed sync implementation | Apply its documented fix only when changes are authorized |
+| Sync branch missing | Inspect the workflow's configured branch | Publish only if required and authorized, using an explicit refspec |
+| br not found | `command -v br` returns nothing | Check repository requirements before an authorized installation |
+| Cycles in graph | `br dep cycles` not empty | Report conflicting dependencies; edit records only when authorized |
 | bv shows nothing | No beads created | Run `br list` to verify |
 
 ### Health Check
@@ -109,7 +109,6 @@ bv --robot-insights   # Check graph health
 
 ```bash
 br config list                              # Show all settings
-br config get sync.branch                   # Check current sync branch
-br config set sync.branch beads-sync        # Set sync branch
-br config set issue_prefix myproject        # Set issue ID prefix
+br config --help                            # Inspect supported keys and commands
+# Change configuration only within authorized setup or repair work.
 ```

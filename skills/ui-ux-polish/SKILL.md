@@ -1,13 +1,13 @@
 ---
 name: ui-ux-polish
-description: "Iterative UI/UX polishing workflow for web applications. The exact prompt and methodology for achieving Stripe-level visual polish through multiple passes."
+description: "Improve an existing interface against agreed usability, accessibility, and visual criteria."
 ---
 
 # UI/UX Polish — Iterative Enhancement Workflow
 
 > **When to Use:** This is for when your site/app already works and looks decent and you want to improve it. There's a different approach when it looks bad and needs a complete overhaul.
 >
-> **Key Insight:** Something about asking for agreement from the model ("don't you agree?") somehow motivates it to polish things up better. Also, instructing it to separately think through desktop vs mobile leads to much better outcomes.
+> Inspect desktop and mobile behavior separately when both are in scope. Choose changes from observed problems and verify their effect.
 
 ---
 
@@ -18,15 +18,15 @@ description: "Iterative UI/UX polishing workflow for web applications. The exact
 1. App already works and looks decent
 2. Run the polish prompt
 3. Agent makes incremental improvements
-4. Repeat many times (10+ iterations)
+4. Verify requested improvements on desktop and mobile; repeat only for remaining defects
 5. Each pass adds small improvements that compound
 
 ### Why Multiple Passes Work
 
-- Each time, it tries to make some incremental improvement, even if it's minor
-- These really add up after 10 iterations!
-- Multiple agents can work on this simultaneously
-- Cumulative effect is dramatic
+- A new observation can reveal a remaining usability or accessibility defect.
+- Repeat a pass only to resolve an identified defect or unmet criterion.
+- Parallel work needs authorization and disjoint ownership.
+- Stop when the agreed improvements and relevant checks pass.
 
 ---
 
@@ -35,52 +35,18 @@ description: "Iterative UI/UX polishing workflow for web applications. The exact
 This prompt is used so frequently it's worth putting on a Stream Deck button:
 
 ```
-I still think there are strong opportunities to enhance the UI/UX look and feel and to make everything work better and be more intuitive, user-friendly, visually appealing, polished, slick, and world class in terms of following UI/UX best practices like those used by Stripe, don't you agree? And I want you to carefully consider desktop UI/UX and mobile UI/UX separately while doing this and hyper-optimize for both separately to play to the specifics of each modality. I'm looking for true world-class visual appeal, polish, slickness, etc. that makes people gasp at how stunning and perfect it is in every way.  Use ultrathink.
+Inspect the requested UI area on desktop and mobile. Identify concrete usability, accessibility, and visual issues; make the highest-impact changes within scope and verify the result. Stop when agreed improvements and relevant checks pass.
 ```
 
 ---
 
-## Why This Prompt Works
+## Evidence and Model Selection
 
-### 1. Asks for Agreement
-
-The phrase "don't you agree?" engages the model's reasoning about whether improvements are possible, rather than just executing instructions.
-
-### 2. Separates Desktop and Mobile
-
-```
-"carefully consider desktop UI/UX and mobile UI/UX separately...
-hyper-optimize for both separately to play to the specifics of each modality"
-```
-
-This prevents the model from making compromises that work "okay" on both but great on neither.
-
-### 3. Sets High Standards
-
-References:
-- "world class"
-- "best practices like those used by Stripe"
-- "makes people gasp at how stunning and perfect it is"
-
-These anchors push the model toward higher quality than generic "make it better" instructions.
-
-### 4. Uses Ultrathink
-
-Extended thinking allows the model to:
-- Analyze the current state thoroughly
-- Consider multiple improvement options
-- Choose the highest-impact changes
-- Think through edge cases
-
----
-
-## Best Models for This Task
-
-| Model | Effectiveness |
-|-------|---------------|
-| **Claude Code + Opus 4.5** | Excellent |
-| **Codex + GPT 5.2** (High/Extra-High reasoning) | Excellent |
-| **Gemini CLI** | Good |
+Use actual desktop and mobile observations to choose improvements. Verify
+usability, accessibility, and visual changes against the requested outcome.
+Select an available model and browser tools that can inspect and verify the
+interface. Reasoning settings differ by harness; prompt words do not guarantee
+a particular reasoning mode or quality level.
 
 ---
 
@@ -105,10 +71,10 @@ This prompt works with:
 # Review changes
 [Agent makes improvements]
 
-# Second pass
-[Run the same prompt again]
+# Further pass, only if a concrete defect remains
+[Inspect and correct that defect]
 
-# Repeat 10+ times until changes become minimal
+# Stop when the requested improvements and relevant checks pass
 ```
 
 ### Multiple Agents
@@ -183,13 +149,13 @@ After each iteration, you might notice:
 - Smoother animations
 - Better responsive behavior
 
-These small changes compound. An app after 10 passes looks dramatically better than after 1 pass.
+Record which observed problems each change resolves. The number of passes is not evidence of quality.
 
 ---
 
 ## Integration with Beads
 
-For systematic UI/UX work, create beads:
+When durable tracking is authorized, record scoped UI/UX tasks using the repository's issue workflow:
 
 ```bash
 br create "Polish homepage UI/UX for desktop" -t enhancement -p 2
@@ -206,19 +172,19 @@ This lets agents work on UI/UX polish as part of the normal bead workflow.
 
 ### Main Polish Prompt
 ```
-I still think there are strong opportunities to enhance the UI/UX look and feel and to make everything work better and be more intuitive, user-friendly, visually appealing, polished, slick, and world class in terms of following UI/UX best practices like those used by Stripe, don't you agree? And I want you to carefully consider desktop UI/UX and mobile UI/UX separately while doing this and hyper-optimize for both separately to play to the specifics of each modality. I'm looking for true world-class visual appeal, polish, slickness, etc. that makes people gasp at how stunning and perfect it is in every way.  Use ultrathink.
+Inspect the requested UI area on desktop and mobile. Identify concrete usability, accessibility, and visual issues; make the highest-impact changes within scope and verify the result. Stop when agreed improvements and relevant checks pass.
 ```
 
 ### Alternative: General Scrutiny (from agent-swarm-workflow)
 ```
-Great, now I want you to super carefully scrutinize every aspect of the application workflow and implementation and look for things that just seem sub-optimal or even wrong/mistaken to you, things that could very obviously be improved from a user-friendliness and intuitiveness standpoint, places where our UI/UX could be improved and polished to be slicker, more visually appealing, and more premium feeling and just ultra high quality, like Stripe-level apps.
+Review the assigned interface and report concrete usability, accessibility, or visual defects against its acceptance criteria. Make changes only when authorized, verify affected desktop and mobile behavior, and stop when the assigned criteria are satisfied.
 ```
 
 ---
 
 ## Tips
 
-1. **Don't skip iterations** — Even when changes seem small, keep going
+1. **Finish against criteria**: Stop when the requested improvements and checks pass; repeat only for a concrete remaining defect.
 2. **Review changes** — Make sure the model isn't breaking things
 3. **Test on real devices** — Desktop browser != mobile experience
 4. **Consider accessibility** — WCAG compliance matters

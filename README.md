@@ -56,7 +56,7 @@ Skills that encode proven workflows and prompts for multi-agent development:
 
 | Skill | Description | Use Case |
 |-------|-------------|----------|
-| **[planning-workflow](skills/planning-workflow/SKILL.md)** | 85%+ time on planning methodology with exact prompts | "How should I plan this feature?" |
+| **[planning-workflow](skills/planning-workflow/SKILL.md)** | Evidence-based plans with dependencies and acceptance criteria | "How should I plan this feature?" |
 | **[beads-workflow](skills/beads-workflow/SKILL.md)** | Converting detailed plans into beads task structure | "Turn this plan into trackable tasks" |
 | **[agent-swarm-workflow](skills/agent-swarm-workflow/SKILL.md)** | Multi-agent implementation workflow with marching orders | "How do I coordinate 5 agents on this?" |
 | **[agent-fungibility](skills/agent-fungibility/SKILL.md)** | Philosophy of interchangeable generalist agents | "Should I specialize my agents?" |

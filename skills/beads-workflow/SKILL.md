@@ -6,13 +6,11 @@ description: >-
   planning to agent swarm execution.
 ---
 
-<!-- TOC: Quick Start | THE EXACT PROMPT | Polishing | br Commands | bd → br Migration | Quality Checklist | Troubleshooting | References -->
+<!-- TOC: Quick Start | Example Prompt | Polishing | br Commands | bd → br Migration | Quality Checklist | Troubleshooting | References -->
 
 # Beads Workflow — From Plan to Actionable Tasks
 
-> **Core Principle:** "Check your beads N times, implement once" — where N is as many as you can stomach.
->
-> Beads are so detailed and polished that you can mechanically unleash a big swarm of agents to implement them, and it will come out just about perfectly.
+> Define implementable tasks with observable acceptance criteria and correct dependencies. Review until material findings are resolved; further passes require new evidence.
 
 ## Quick Start
 
@@ -20,10 +18,10 @@ description: >-
 # 1. Initialize beads in project
 br init
 
-# 2. Convert plan to beads (see THE EXACT PROMPT below)
+# 2. Convert plan to beads (see Example Prompt below)
 
 # 3. Polish iteratively
-# Run polish prompt 6-9 times until steady-state
+# Review scope, acceptance criteria, and dependency correctness
 
 # 4. Validate
 br dep cycles        # Must be empty
@@ -35,16 +33,16 @@ bv --robot-next      # Get first bead
 
 ---
 
-## THE EXACT PROMPT — Plan to Beads Conversion
+## Example Prompt — Plan to Beads Conversion
 
 ```
-OK so now read ALL of [YOUR_PLAN_FILE].md; please take ALL of that and elaborate on it and use it to create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.). The beads should be so detailed that we never need to consult back to the original markdown plan document. Remember to ONLY use the `br` tool to create and modify the beads and add the dependencies. Use ultrathink.
+Convert the accepted plan into bounded tasks with acceptance criteria, dependencies, ownership, and the rationale needed for implementation. Preserve the agreed scope. Use the repository's supported issue tool and safe-write protocol only when issue creation is authorized.
 ```
 
 ### Shorter Version
 
 ```
-OK so please take ALL of that and elaborate on it more and then create a comprehensive and granular set of beads for all this with tasks, subtasks, and dependency structure overlaid, with detailed comments so that the whole thing is totally self-contained and self-documenting (including relevant background, reasoning/justification, considerations, etc.-- anything we'd want our "future self" to know about the goals and intentions and thought process and how it serves the over-arching goals of the project.)  Use only the `br` tool to create and modify the beads and add the dependencies. Use ultrathink.
+Convert the accepted plan into scoped tasks with acceptance criteria and dependencies using the repository's authorized issue workflow.
 ```
 
 ### What This Creates
@@ -58,37 +56,37 @@ OK so please take ALL of that and elaborate on it more and then create a compreh
 
 ## Polishing Beads
 
-### THE EXACT PROMPT — Polish (Standard)
+### Example Prompt — Polish (Standard)
 
 ```
-Reread AGENTS dot md so it's still fresh in your mind. Check over each bead super carefully-- are you sure it makes sense? Is it optimal? Could we change anything to make the system work better for users? If so, revise the beads. It's a lot easier and faster to operate in "plan space" before we start implementing these things!
+Review the assigned plan and its task graph against the requested scope, dependencies, and acceptance criteria. Report concrete omissions or conflicts. Revise records only when edits are authorized; keep additional ideas separate.
 
 DO NOT OVERSIMPLIFY THINGS! DO NOT LOSE ANY FEATURES OR FUNCTIONALITY!
 
-Also, make sure that as part of these beads, we include comprehensive unit tests and e2e test scripts with great, detailed logging so we can be sure that everything is working perfectly after implementation. Remember to ONLY use the `br` tool to create and modify the beads and to add the dependencies to beads. Use ultrathink.
+Include verification appropriate to the planned behavior and material regression risks. Preserve the plan's required outcomes without adding unrelated test work.
 ```
 
 ### Polishing Protocol
 
 1. Run polish prompt
 2. Review changes
-3. Repeat until steady-state (typically 6-9 rounds)
-4. If it flatlines, start a fresh CC session
-5. Optionally have Codex/GPT 5.5 do a final round
+3. Repeat only when revisions leave material findings to resolve
+4. Stop when acceptance criteria are met and no material findings remain
+5. If a specific unresolved finding needs fresh context or expertise, request a capable reviewer
 
 ---
 
 ## Fresh Session Technique
 
-If polishing flatlines, start a new Claude Code session:
+When an unresolved finding requires a fresh session, transfer its evidence and scope:
 
-### THE EXACT PROMPT — Re-establish Context
+### Example Prompt — Re-establish Context
 
 ```
-First read ALL of the AGENTS dot md file and README dot md file super carefully and understand ALL of both! Then use your code investigation agent mode to fully understand the code, and technical architecture and purpose of the project.  Use ultrathink.
+Read the applicable AGENTS.md and the documentation needed for your assigned task. Inspect affected code and its contracts. For a shared swarm, register with Agent Mail and check ownership before editing.
 ```
 
-### THE EXACT PROMPT — Then Review Beads
+### Example Prompt — Then Review Beads
 
 ```
 We recently transformed a markdown plan file into a bunch of new beads. I want you to very carefully review and analyze these using `br` and `bv`.
@@ -133,30 +131,30 @@ br list --json                       # Machine-readable
 ### Sync to Git
 
 ```bash
-br sync --flush-only                 # Export DB → JSONL
-git add .beads/ && git commit -m "Update beads"
+br sync --flush-only                 # Only after authorized issue writes
+# Inspect the export and follow the repository's safe ledger-write protocol.
+# Stage only the intended records/files when commit and delivery are authorized.
 ```
 
 ---
 
 ## bd → br Migration (Docs)
 
-Use this when you see legacy `bd` references in AGENTS.md or docs.
+Use this only for a requested migration to `br`. Existing `bd` references alone do not justify migration.
 
-**Behavioral difference (only one):**
-- **`br sync` never runs git commands**. After `br sync --flush-only`, you must `git add .beads/` and `git commit` (and `git push`) yourself.
+**Check the installed implementation first:**
+- `bd` may be upstream Beads or a compatibility shim for `br`; inspect the repository's tool contract before changing commands.
+- `br sync` never runs Git commands. Review any intentional export and commit or push only within authorized delivery work.
 
 **Transform checklist (order matters):**
-1. `bd` commands → `br` commands
-2. `bd sync` → `br sync --flush-only` + `git add .beads/` + `git commit`
+1. Confirm migration is authorized and inspect each command's supported `br` equivalent. Preserve `bd` commands when the repository still uses upstream Beads or its compatibility shim.
+2. For an authorized migration, map export commands to `br sync --flush-only`; keep staging, commits, and pushes in the repository's separately scoped delivery workflow.
 3. Do NOT assume issue IDs must change `bd-*` → `br-*` — the prefix is configurable (often remains `bd-*`).
-4. Remove daemon/auto-commit references
+4. Update daemon/auto-commit references only where the verified implementation no longer supports them
 
-**Verify:**
+**Verify the intended migration scope:**
 ```bash
-grep -c '`bd ' file.md        # must be 0
-grep -c 'bd sync' file.md     # must be 0
-grep -c 'br sync --flush-only' file.md  # must be > 0
+rg -n '`bd |bd sync|br sync' file.md  # Review each match against the repository's tool contract
 ```
 
 ---
@@ -212,8 +210,8 @@ release_file_reservations(...)
 
 Your beads are ready for implementation when:
 
-1. **Steady-state reached** — Multiple polish rounds yield minimal changes
-2. **Cross-model reviewed** — At least one alternative model reviewed
+1. **Acceptance criteria met** — Tasks are implementable and material findings resolved
+2. **Review requirements met**: Complete the review needed for the task's risks; a particular model or minimum number of reviewers is not required.
 3. **No cycles** — `br dep cycles` returns empty
 4. **Tests included** — Each feature has associated test beads
 5. **Dependencies clean** — Graph makes logical sense
@@ -236,15 +234,19 @@ Your beads are ready for implementation when:
 
 ### Worktree Error Fix
 
-If you get `failed to create worktree: 'main' is already checked out`:
+If you get `failed to create worktree: 'main' is already checked out`, inspect the
+installed implementation and repository sync configuration first. Only when its
+documented workflow requires a dedicated sync branch and configuration changes
+and publication are authorized, adapt this example to verified branch names:
 
 ```bash
-git branch beads-sync main
-git push -u origin beads-sync
-br config set sync-branch beads-sync
+git branch beads-sync main             # Only if this branch does not already exist
+git remote -v                         # Verify the intended remote
+git push -u origin beads-sync:refs/heads/beads-sync
+# Configure the actual sync caller using its verified tool contract.
 ```
 
-Always use a dedicated sync branch that you never check out directly.
+Use a dedicated sync branch only when required by the installed tool's contract.
 
 ### Quick Health Check
 

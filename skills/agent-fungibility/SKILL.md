@@ -1,6 +1,6 @@
 ---
 name: agent-fungibility
-description: "The philosophy and practical benefits of agent fungibility in multi-agent software development. Why homogeneous, interchangeable agents outperform specialized role-based systems at scale."
+description: "Compare interchangeable and specialized agents when designing multi-agent software workflows."
 ---
 
 # Agent Fungibility — The Key to Scalable Agent Swarms
@@ -18,9 +18,9 @@ A burgeoning debate has sprung up around the optimal way to scale up the number 
 | Approach | Description |
 |----------|-------------|
 | **Specialized Roles** | Assign distinct roles (tester agent, backend agent, committer agent, etc.) |
-| **Fungible Agents** | All agents are identical and can do any task |
+| **Fungible Agents** | Agents can replace each other within compatible assignments |
 
-**The answer for software development: Fungible agents win.**
+**Interchangeable agents can simplify recovery when tasks share the same capabilities and permissions.**
 
 ---
 
@@ -37,7 +37,7 @@ Rather than setting up a complex heterogeneous system where you have assigned ro
 
 ### The Fungibility Solution
 
-You're better off just having a bunch of **fungible agents** that are all simply executing beads of any kind.
+Use **fungible agents** for tasks whose tool access, context, and verification requirements they can all meet. Use specialized assignments when expertise, permissions, or independent review require them.
 
 They can be any kind of agent:
 - Claude Code
@@ -47,7 +47,7 @@ They can be any kind of agent:
 - Cursor
 - etc.
 
-But they're **fungible** in that they can all wear any hat and adaptively assume any role depending on the bead task they're working on.
+Treat agents as interchangeable only within assignments whose capabilities, permissions, and handoff requirements they each meet.
 
 ---
 
@@ -55,7 +55,7 @@ But they're **fungible** in that they can all wear any hat and adaptively assume
 
 ### 1. Use BV to Choose Optimal Next Bead
 
-Each agent uses `bv --robot-triage` or `bv --robot-next` to find the highest-impact ready bead. No central assignment needed.
+Within an explicitly assigned continuing queue, agents can use `bv --robot-triage` or `bv --robot-next` to propose the next ready bead. A proposal outside that queue is not a new assignment.
 
 ### 2. Put Everything in the Plan → Beads
 
@@ -72,26 +72,22 @@ Agents fail. They:
 - Get stuck in loops
 - Need to be "euthanized" and restarted
 
-**With fungible agents, you never have to worry about that stuff.**
+**Interchangeable agents simplify replacement; handoff state and ownership still need verification.**
 
 When an agent dies:
 1. The bead it was working on remains marked in-progress
-2. Any other agent can pick it up
-3. No special replacement logic needed
-4. No dependency on that specific agent
+2. A capable replacement can pick it up after checking ownership
+3. Transfer the current state, evidence, and remaining work
+4. Release or hand off reservations held by the previous agent
 
 ---
 
 ## Scaling Properties
 
-When you want to move faster:
-- Simply spin up more agents at any time
-- Don't need to think about whether there's an imbalance between the counts of each agent role
-- 3 agents → 10 agents → 20 agents: just add more, they all do the same thing
-
-**Agent fungibility lets you go much faster and scales better, especially as:**
-- Projects get larger and more complex
-- Agent counts increase past 10 working on the same project at the same time
+Add agents only when authorized, independent assignments can run concurrently.
+Check each agent's capabilities, permissions, and file ownership before assignment.
+Measure completed work and coordination costs before increasing the team size;
+stop expanding when contention or review work outweighs the benefit.
 
 ---
 
@@ -103,7 +99,7 @@ This is why I'm a huge fan of things like fountain codes (like RaptorQ) for file
 
 In software development:
 - Each bead is a "blob"
-- Any agent can work on any bead
+- An agent can take a bead when it is assigned and the agent meets its requirements
 - There's no "critical specialist" that becomes a bottleneck
 - The system is resilient to partial failures
 
@@ -117,7 +113,7 @@ Why it works there:
 - The discourse itself (the back and forth between different agent types) is the core mechanism of surfacing truth
 - The debate structure IS the point
 
-Why it doesn't work for software:
+Tradeoffs to consider in software:
 - In software development, we just want good code that works
 - The goal is output, not discourse
 - Fungibility removes bottlenecks and single points of failure
@@ -129,19 +125,18 @@ Why it doesn't work for software:
 > **Most of my agent tooling and workflows are about removing me from the equation, because there's only one of me, but a potentially unlimited number of agents.**
 
 The way to do this:
-1. **Front-load all input in planning phases** — Use GPT Pro with Extended Reasoning, multiple iterations, blend feedback from all frontier models
-2. **Offload task structuring** — Convert plans to beads with full dependency graphs
-3. **Allow direct communication** — Agent Mail lets agents coordinate without you
-4. **Set it running and move on** — By the time you come back, huge chunks of work are done
+1. **Define the assignment**: Record scope, acceptance checks, and unresolved decisions; use additional review when a concrete concern warrants it.
+2. **Structure authorized work**: Use beads when durable task tracking is requested or required, preserving the plan's dependencies.
+3. **Coordinate within scope**: Use authorized agent communication and explicit file ownership.
+4. **Bound execution**: Give each agent a stopping condition and inspect its verification evidence before accepting the result.
 
 ### Why This Works
 
-It all ultimately works because:
-- The best models (GPT Pro) are used to their fullest
-- Many iterations with blending feedback from all frontier models
-- The very best model as the final arbiter
-- In "plan space" it all fits easily in context windows
-- Models can see the entire system at once instead of through a pinhole
+It depends on checkable conditions:
+- Each assigned model has the tools, permissions, and context its task needs.
+- Review resolves a concrete uncertainty or tests an acceptance criterion.
+- Decisions follow evidence rather than a fixed model ranking.
+- Shared plans and handoffs preserve relevant context within available limits.
 
 ---
 
@@ -160,13 +155,13 @@ ntm send myproject --all "$(cat initial_prompt.txt)"
 ### The Initial Prompt (Same for All)
 
 ```
-First read ALL of the AGENTS dot md file and README dot md file super carefully and understand ALL of both! Then use your code investigation agent mode to fully understand the code, and technical architecture and purpose of the project. Then register with MCP Agent Mail and introduce yourself to the other agents.
+Read the applicable AGENTS.md and the documentation needed for your assigned task. Inspect affected code and its contracts. For a shared swarm, register with Agent Mail and check ownership before editing.
 
 Be sure to check your agent mail and to promptly respond if needed to any messages; then proceed meticulously with your next assigned beads, working on the tasks systematically and meticulously and tracking your progress via beads and agent mail messages.
 
 Don't get stuck in "communication purgatory" where nothing is getting done; be proactive about starting tasks that need to be done, but inform your fellow agents via messages when you do so and mark beads appropriately.
 
-When you're not sure what to do next, use the bv tool mentioned in AGENTS dot md to prioritize the best beads to work on next; pick the next one that you can usefully work on and get started. Make sure to acknowledge all communication requests from other agents and that you are aware of all active agents and their names.  Use ultrathink.
+Choose ready work within the assigned scope using bv robot output. Check ownership, mark progress, and respond to relevant coordination messages. Once assigned work is complete, report the result and hand off remaining state.
 ```
 
 ### When an Agent Fails
@@ -180,7 +175,7 @@ When you're not sure what to do next, use the bv tool mentioned in AGENTS dot md
    - See what's in-progress/stuck
    - Either resume or pick a new bead
 
-No special logic. No role assignment. Just fungibility.
+Verify replacement capabilities, ownership, and remaining acceptance criteria before resuming.
 
 ---
 
@@ -188,11 +183,11 @@ No special logic. No role assignment. Just fungibility.
 
 | Property | Specialized Agents | Fungible Agents |
 |----------|-------------------|-----------------|
-| **Failure handling** | Complex | Simple |
-| **Scaling** | Requires role balancing | Just add more |
-| **Replacement** | Need matching specialist | Any agent works |
-| **Single point of failure** | Yes (each role) | No |
-| **Coordination overhead** | High | Low (via beads + mail) |
-| **Human involvement** | Ongoing | Front-loaded in planning |
+| **Failure handling** | Find a matching specialist | Verify a capable replacement |
+| **Scaling** | Check role capacity | Check independent assignments and contention |
+| **Replacement** | Match the required specialty | Match capabilities and permissions |
+| **Single point of failure** | Depends on available replacements | Depends on available replacements |
+| **Coordination overhead** | Measure handoff costs | Measure ownership and review costs |
+| **Human involvement** | Required for unresolved decisions | Required for unresolved decisions |
 
-**The bottom line:** Agent fungibility lets you build the machine once, set it running, and move on. The swarm handles the rest.
+Interchangeable agents can simplify handoffs. Verify outcomes and retain the task's authorization limits.

@@ -13,7 +13,7 @@
 
 **Q: Shouldn't I code a skeleton first?**
 
-A: You get a better result faster by creating one big comprehensive, detailed, granular plan. That's the only way to get models to understand the entire system at once. Once you start turning it into code, it gets too big to understand.
+A: Use a bounded prototype when it resolves a concrete uncertainty. Use a plan to capture scope, dependencies, decisions, and verification; split it when independent workstreams need separate context.
 
 ---
 
@@ -21,7 +21,7 @@ A: You get a better result faster by creating one big comprehensive, detailed, g
 
 **Q: What about problems I didn't anticipate?**
 
-A: Finding the flaws and fixing them is the whole point of all the iterations and blending in feedback from all the frontier models. If you follow the procedure using those specific models and prompts, after enough rounds, you will have an extremely good plan that will "just work."
+A: Record assumptions and unresolved decisions. Revise when implementation provides new evidence. Review reduces uncertainty but cannot guarantee a plan will work; stop reviewing once the current acceptance criteria and material findings are resolved.
 
 After implementing v1, you create another plan for v2. Nothing says you can only do one plan.
 
@@ -39,7 +39,7 @@ A: Each agent uses bv to find the next optimal bead and marks it in-progress. Di
 
 **Q: Do agents need specialization?**
 
-A: No. Every agent is fungible and a generalist. They all use the same base model and read the same AGENTS.md. Simply telling one it's a "frontend agent" doesn't make it better at frontend.
+A: Interchangeable agents help when their capabilities and permissions fit the tasks. Use specialized ownership for expertise, access restrictions, or independent review. A role name alone does not establish capability.
 
 ---
 

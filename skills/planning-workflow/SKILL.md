@@ -12,7 +12,7 @@ description: >-
 
 > **Core Philosophy:** "Planning tokens are a lot fewer and cheaper than implementation tokens."
 >
-> The models are far smarter when reasoning about a detailed plan that fits within their context window. This is the key insight behind spending 80%+ of time on planning.
+> Scale planning to uncertainty, dependencies, and risk. Keep the plan small enough to review and precise enough to implement.
 
 ---
 
@@ -23,10 +23,10 @@ You have a usable plan when **all** of the following hold:
 - The plan is **self-contained**: a fresh agent who has never seen the project can read it and start implementing without asking the human for clarification.
 - It is **dependency-aware**: every non-trivial task names what blocks it and what it unblocks, so the work decomposes cleanly into a beads graph.
 - It is **justified**: every architectural choice and every non-obvious feature has at least one sentence on *why*, not just *what* — future agents need the rationale to make consistent local decisions.
-- It has survived **at least 4 review rounds** by a strong reasoning model (GPT Pro Extended Reasoning is the proven choice) and reached steady-state — i.e., the most recent round produces marginal rather than structural revisions.
-- It has been **converted to beads** with the dependency graph intact, so implementation agents can pick up ready work via `br ready --json` without re-reading the plan.
+- Review has resolved material gaps in scope, dependencies, and verification. Repeat a review only when new evidence or revisions warrant it.
+- Each task has acceptance criteria. Convert to beads with the dependency graph intact when task creation is requested; a plan-only request ends with the reviewed plan.
 
-You have NOT delivered if any of these is true: the plan is < ~1,500 lines for a non-trivial project (under-specified); the plan is > ~10,000 lines with no decomposition (impossible to act on); the human is still being asked "what should this do?" mid-implementation (planning was abandoned, not completed); beads exist but have no dependency edges (the plan's structure was lost in conversion).
+Delivery requires clear scope, unresolved decisions called out, implementable tasks, and verification criteria. Length and review count are not acceptance criteria. Split a plan when independent workstreams need separate context.
 
 ## When NOT to Use This Skill
 
@@ -35,7 +35,7 @@ Reach for something else if:
 - **The change is small and local** (one bug fix, one file, < ~200 LOC) → plan in chat or as a one-line TaskCreate; the planning overhead exceeds the implementation cost.
 - **You are doing pure research** (investigating an unknown codebase, prototyping an idea) → use `codebase-archaeology` or `idea-wizard` first; planning is for execution, not discovery.
 - **The architecture is dictated** (you are porting an existing system, following a spec, or implementing a well-defined RFC) → use `porting-to-rust` or `testing-conformance-harnesses`; the plan is the spec itself.
-- **You're under a hard deadline that doesn't permit 80%-on-planning** (live incident, hotfix, security patch) → ship the fix, then retrofit the plan if the area needs further work.
+- **You're handling an incident or hotfix** → document the immediate hypothesis and verification, then expand the plan only if follow-up work needs it.
 
 ## Grounding — Sources of Truth for Plan Decisions
 
@@ -51,14 +51,14 @@ A plan that survived review without grounding is a plan that will surprise you i
 
 ## Validation Loop (between review rounds)
 
-After each review round, before sending the plan back for another pass, run all four:
+Check these properties before delivering the plan:
 
-1. **Self-containment check** — pick the most obscure task in the plan, paste it alone into a fresh chat, and ask "is this implementable as written?" If no, expand.
-2. **Dependency-graph check** — can you draw the DAG of tasks? Are there cycles? Are there orphans (tasks with no consumers)? Either is a planning bug.
-3. **Justification check** — sample 5 random architectural decisions. Each must have a paragraph of *why*. If not, ask the planning model to add it.
-4. **Steady-state check** — diff this round's plan against the previous round's. If the diff is large structural changes, you need another round. If it's typo-level polish, you're done.
+1. **Self-containment check** — each task includes enough context and acceptance criteria to implement it.
+2. **Dependency-graph check** — dependencies exist and have no cycles. Independent tasks and terminal tasks are valid.
+3. **Justification check** — material architectural decisions explain their rationale and evidence.
+4. **Revision check** — review material changes and unresolved findings; stop when these properties hold.
 
-If any of these fails, the plan is not ready for beads conversion — do another review round.
+Resolve a failed check or report a blocked decision. Convert to beads only when requested.
 
 ---
 
@@ -71,22 +71,22 @@ If any of these fails, the plan is not ready for beads conversion — do another
 
 ---
 
-## THE EXACT PROMPT — Plan Review (GPT Pro Extended Reasoning)
+## Plan Review Prompt
 
 ```
-Carefully review this entire plan for me and come up with your best revisions in terms of better architecture, new features, changed features, etc. to make it better, more robust/reliable, more performant, more compelling/useful, etc. For each proposed change, give me your detailed analysis and rationale/justification for why it would make the project better along with the git-diff style change versus the original plan shown below:
+Review this plan against the stated goals, constraints, dependencies, and acceptance criteria. Identify concrete defects or unresolved decisions, explain their impact, and propose scoped revisions. Keep additional feature ideas separate for approval.
 
 <PASTE YOUR EXISTING COMPLETE PLAN HERE>
 ```
 
 ---
 
-## THE EXACT PROMPT — Integrate Revisions (Claude Code)
+## Integrate Revisions
 
-After GPT Pro finishes (may take 20-30 minutes), paste output into Claude Code:
+After reviewing the proposed changes, apply supported revisions within the requested planning scope:
 
 ```
-OK, now integrate these revisions to the markdown plan in-place; use ultrathink and be meticulous. At the end, you can tell me which changes you wholeheartedly agree with, which you somewhat agree with, and which you disagree with:
+Integrate supported, in-scope revisions into the plan. Explain any rejected change and identify decisions that still require input. Preserve the stated constraints and acceptance criteria.
 
 ```[Pasted text from GPT Pro]```
 ```
@@ -95,22 +95,25 @@ OK, now integrate these revisions to the markdown plan in-place; use ultrathink 
 
 ## Process Overview
 
+Select available capabilities for the work;
+steps 4–5 apply only when task creation is requested.
+
 ```
-1. INITIAL PLAN (GPT Pro / Opus 4.7 in web app)
+1. INITIAL PLAN
    └─► Explain goals, intent, workflows, tech stack
 
-2. ITERATIVE REFINEMENT (GPT Pro Extended Reasoning)
-   └─► 4-5 rounds of revision until steady-state
+2. REFINE MATERIAL FINDINGS
+   └─► Resolve material findings; repeat only when revisions need review
 
-3. MULTI-MODEL BLENDING (Optional but recommended)
-   └─► Gemini 3.1 Pro Deep Think, Grok4 Heavy, Opus 4.7
-   └─► GPT Pro as final arbiter
+3. INDEPENDENT REVIEW (when uncertainty or risk justifies it)
+   └─► Choose reviewers with relevant capabilities and sufficient context
+   └─► Resolve disagreements against evidence and acceptance criteria
 
-4. CONVERT TO BEADS (Claude Code + Opus 4.7)
+4. CONVERT TO BEADS (when task creation is requested)
    └─► Self-contained tasks with dependency structure
 
-5. POLISH BEADS (6+ rounds until steady-state)
-   └─► Cross-model review, never oversimplify
+5. VALIDATE BEADS (when task creation is requested)
+   └─► Verify dependencies, scope, and acceptance criteria
 ```
 
 ---
@@ -123,7 +126,7 @@ OK, now integrate these revisions to the markdown plan in-place; use ultrathink 
 | Lists features | Details user workflows and interactions |
 | Mentions tech stack | Justifies tech choices with tradeoffs |
 | Has tasks | Has tasks with dependencies and rationale |
-| ~500 lines | ~3,500+ lines after refinement |
+| Lists tasks | Defines acceptance criteria and verification |
 
 ### Essential Elements
 
@@ -137,10 +140,10 @@ OK, now integrate these revisions to the markdown plan in-place; use ultrathink 
 
 ## Common Mistakes
 
-1. **Starting implementation too early** — 3 hours of planning saves 30 hours of rework
-2. **Single-round review** — You continue to get improvements even at round 6+
-3. **Not using GPT Pro** — Extended Reasoning is uniquely good for this
-4. **Skeleton-first coding** — One big comprehensive plan beats incremental coding
+1. **Starting before scope is clear** — Resolve decisions that block implementation
+2. **Repeated review without new evidence** — Stop when acceptance criteria are met
+3. **Choosing models by reputation alone** — Match available reasoning, tools, and context to the task
+4. **One oversized plan** — Decompose independent workstreams when that improves review
 5. **Losing context** — Convert plans to beads so agents don't need the original
 
 ---

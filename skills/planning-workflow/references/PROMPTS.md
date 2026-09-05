@@ -1,50 +1,49 @@
 # Planning Prompts — Complete Reference
 
 ## Table of Contents
-- [Plan Review (GPT Pro)](#plan-review-gpt-pro)
-- [Integrate Revisions (Claude Code)](#integrate-revisions-claude-code)
-- [Multi-Model Blend (GPT Pro)](#multi-model-blend-gpt-pro)
+- [Plan Review](#plan-review)
+- [Integrate Revisions](#integrate-revisions)
+- [Compare Plans](#compare-plans)
 - [Initial Plan Creation](#initial-plan-creation)
 
 ---
 
-## Plan Review (GPT Pro)
+## Plan Review
 
-Use with GPT Pro with Extended Reasoning enabled. Paste your entire markdown plan:
+Use an available reasoning model suited to the plan. Include the relevant plan and its acceptance criteria:
 
 ```
-Carefully review this entire plan for me and come up with your best revisions in terms of better architecture, new features, changed features, etc. to make it better, more robust/reliable, more performant, more compelling/useful, etc. For each proposed change, give me your detailed analysis and rationale/justification for why it would make the project better along with the git-diff style change versus the original plan shown below:
+Review this plan against the stated goals, constraints, dependencies, and acceptance criteria. Identify concrete defects or unresolved decisions, explain their impact, and propose scoped revisions. Keep additional feature ideas separate for approval.
 
 <PASTE YOUR EXISTING COMPLETE PLAN HERE>
 ```
 
 ---
 
-## Integrate Revisions (Claude Code)
+## Integrate Revisions
 
-After GPT Pro finishes (may take 20-30 minutes for complex plans), paste the output into Claude Code:
+After reviewing the proposed changes, apply supported revisions within the requested planning scope:
 
 ```
-OK, now integrate these revisions to the markdown plan in-place; use ultrathink and be meticulous. At the end, you can tell me which changes you wholeheartedly agree with, which you somewhat agree with, and which you disagree with:
+Integrate supported, in-scope revisions into the plan. Explain any rejected change and identify decisions that still require input. Preserve the stated constraints and acceptance criteria.
 
-```[Pasted text from GPT Pro]```
+[Paste reviewed revisions here]
 ```
 
-### Repeat Until Steady-State
+### Review Completion
 
-- Start fresh ChatGPT conversations for each round
-- After 4-5 rounds, suggestions become very incremental
-- You'll see massive improvements from v2 to v3, continuing to the end
-- This phase can take 2-3 hours for complex features — this is normal
+- Review scope, dependencies, decisions, and acceptance criteria.
+- Repeat when a revision or new evidence needs review.
+- Finish when material findings are resolved; there is no minimum round count.
 
 ---
 
-## Multi-Model Blend (GPT Pro)
+## Compare Plans
 
-Get competing plans from Gemini 3.1 Pro (Deep Think), Grok4 Heavy, and Opus 4.7, then use GPT Pro as final arbiter:
+When another perspective is useful, compare supplied plans against evidence and the requested outcome:
 
 ```
-I asked 3 competing LLMs to do the exact same thing and they came up with pretty different plans which you can read below. I want you to REALLY carefully analyze their plans with an open mind and be intellectually honest about what they did that's better than your plan. Then I want you to come up with the best possible revisions to your plan (you should simply update your existing document for your original plan with the revisions) that artfully and skillfully blends the "best of all worlds" to create a true, ultimate, superior hybrid version of the plan that best achieves our stated goals and will work the best in real-world practice to solve the problems we are facing and our overarching goals while ensuring the extreme success of the enterprise as best as possible; you should provide me with a complete series of git-diff style changes to your original plan to turn it into the new, enhanced, much longer and detailed plan that integrates the best of all the plans with every good idea included (you don't need to mention which ideas came from which models in the final revised enhanced plan):
+Compare the supplied plans against the requested outcome and available evidence. Integrate supported corrections that fit the agreed scope. Explain rejected alternatives and unresolved decisions. Provide focused diffs; neither a longer plan nor inclusion of every suggestion is required.
 
 [Paste competing plans here]
 ```
@@ -61,4 +60,4 @@ When starting a new project, include:
 4. **Architecture Decisions** — High-level structure and patterns
 5. **The "Why"** — The more the model understands your end goal, the better it performs
 
-You don't even need to write the initial markdown plan yourself. You can write that with GPT Pro, just explaining what it is you want to make.
+An available agent can draft the plan from the stated goals and constraints; verify its assumptions before accepting the result.

@@ -31,7 +31,8 @@ Keep best practices guides in your project folder and reference them in AGENTS.m
 
 - [claude_code_agent_farm/best_practices_guides](https://github.com/Dicklesworthstone/claude_code_agent_farm/tree/main/best_practices_guides)
 
-Have Claude Code search the web and update them to latest versions.
+When guidance is relevant to the assigned task, verify it against current primary
+sources. Update project guidance only when changes are authorized.
 
 ---
 
@@ -42,4 +43,5 @@ Have Claude Code search the web and update them to latest versions.
 | **Web app** | TypeScript, Next.js 16, React 19, Tailwind, Supabase (performance-critical parts in Rust compiled to WASM) |
 | **CLI tool** | Golang or Rust if very performance critical |
 
-If unsure, do a deep research round with GPT Pro or Gemini 3.1 Pro to study libraries and get suggestions.
+If a consequential library choice remains unresolved, research the specific
+requirements using current primary sources. Select tools by the needed capability.
